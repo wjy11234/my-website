@@ -1,0 +1,68 @@
+import CursorGrid from '../components/CursorGrid'
+import ProfileCard from '../components/ProfileCard'
+import MusicPlayerCard from '../components/MusicPlayerCard'
+import BannerBar from '../components/BannerBar'
+import ArticleCard from '../components/ArticleCard'
+import AnnouncementCard from '../components/AnnouncementCard'
+import WeatherCard from '../components/WeatherCard'
+import ThemeToggle from '../components/ThemeToggle'
+import FloatingButtons from '../components/FloatingButtons'
+import SiteFooter from '../components/SiteFooter'
+import { articles } from '../data/siteData'
+import styles from './Home.module.css'
+
+function Home() {
+  return (
+    <div className={styles.home}>
+      <CursorGrid
+        color="#a78bfa"
+        radius={160}
+        cellSize={70}
+        holdTime={300}
+        fadeDuration={600}
+        lineWidth={0.8}
+        maxOpacity={0.5}
+        clickPulse={true}
+        pulseSpeed={500}
+      />
+
+      <div className={styles.content}>
+        {/* 顶部双卡片：个人信息(3) + 音乐播放器(2) */}
+        <div className={styles.topCards}>
+          <ProfileCard />
+          <MusicPlayerCard />
+        </div>
+
+        {/* 中间横幅 */}
+        <div className={styles.bannerWrap}>
+          <BannerBar />
+        </div>
+
+        {/* 文章卡片网格 */}
+        <div className={styles.articleGrid}>
+          {articles.map((article, i) => (
+            <ArticleCard key={i} article={article} />
+          ))}
+        </div>
+
+        {/* 公告 + 天气卡片 */}
+        <div className={styles.bottomCards}>
+          <AnnouncementCard />
+          <WeatherCard />
+        </div>
+
+        {/* 主题切换 */}
+        <div className={styles.themeRow}>
+          <ThemeToggle />
+        </div>
+      </div>
+
+      <FloatingButtons />
+
+      {/* 页面底部通栏 */}
+      <SiteFooter />
+    </div>
+  )
+}
+
+export default Home

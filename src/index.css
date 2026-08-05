@@ -1,0 +1,53 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: #FAF8F0;
+  color: #1A1A1A;
+  overflow-x: hidden;
+}
+
+/* 亮色主题 */
+[data-theme="light"] {
+  --bg: #FAF8F0;
+  --card-bg: rgba(255, 255, 255, 0.7);
+  --text: #1e293b;
+  --text-secondary: #64748b;
+}
+
+[data-theme="light"] body {
+  background: #FAF8F0;
+  color: #1e293b;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.4);
+}
+
+/* 页面通用样式 */
+.page h1 {
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.page p {
+  font-size: 16px;
+  color: #94a3b8;
+  line-height: 1.8;
+}

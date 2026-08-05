@@ -1,0 +1,256 @@
+/* ===== 页面容器 ===== */
+.page {
+  min-height: 100vh;
+  background: 
+    linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.85) 100%),
+    url('/wallhaven1.png') center/cover no-repeat fixed;
+  padding: 48px 24px 80px;
+}
+
+.pageInner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* ===== 页面头部 ===== */
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #64748b;
+}
+
+/* ===== 时间轴容器 ===== */
+.timeline {
+  position: relative;
+}
+
+/* ===== 时间轴条目 ===== */
+.timelineItem {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+/* 入场动画 */
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.timelineItem.visible {
+  animation: cardEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: var(--delay, 0s);
+}
+
+/* ===== 日期列（flex 子元素） ===== */
+.dateCol {
+  width: 105px;
+  flex-shrink: 0;
+  text-align: right;
+  padding-top: 2px;
+}
+
+.dateText {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.timeText {
+  display: block;
+  font-size: 20px;
+  font-weight: 300;
+  color: #64748b;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  margin-top: 2px;
+}
+
+.timelineItem.visible .dateText {
+  animation: fadeRight 0.6s ease-out var(--delay, 0s) both;
+}
+
+.timelineItem.visible .timeText {
+  animation: fadeRight 0.6s ease-out calc(var(--delay, 0s) + 0.05s) both;
+}
+
+@keyframes fadeRight {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ===== 时间轴节点（flex 子元素） ===== */
+.timelineNode {
+  position: relative;
+  width: 14px;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+.nodeDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #a78bfa;
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+  margin-top: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.timelineItem.visible .nodeDot {
+  animation: dotPulse 0.6s ease-out;
+}
+
+@keyframes dotPulse {
+  0% { box-shadow: 0 0 0 rgba(139, 92, 246, 0); }
+  50% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.8); }
+  100% { box-shadow: 0 0 12px rgba(139, 92, 246, 0.5); }
+}
+
+.nodeLine {
+  position: absolute;
+  top: 26px;
+  left: 6px;
+  bottom: -32px;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(139, 92, 246, 0.3) 0%,
+    rgba(139, 92, 246, 0.05) 100%
+  );
+}
+
+/* 最后一项不显示竖线 */
+.timelineItem:last-child .nodeLine {
+  display: none;
+}
+
+/* ===== 内容卡片 ===== */
+.card {
+  flex: 1;
+  position: relative;
+  padding: 20px 24px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(139, 92, 246, 0.2);
+  transform: translateX(4px);
+}
+
+/* 卡片光晕 */
+.cardGlow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at 30% 50%,
+    rgba(139, 92, 246, 0.06) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+/* 卡片内容 */
+.cardContent {
+  position: relative;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #cbd5e1;
+  margin-bottom: 14px;
+}
+
+/* 卡片底部 */
+.cardFooter {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tag {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--tag-color);
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 768px) {
+  .page {
+    padding: 32px 16px 60px;
+  }
+
+  .dateCol {
+    width: 70px;
+  }
+
+  .dateText {
+    font-size: 11px;
+  }
+
+  .timeText {
+    font-size: 16px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .timelineNode {
+    display: none;
+  }
+
+  .timelineItem {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .dateCol {
+    width: auto;
+    text-align: left;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+}

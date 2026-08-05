@@ -1,0 +1,67 @@
+.home {
+  position: relative;
+  min-height: 100vh;
+  background: #FAF8F0;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 40px;
+}
+
+/* 顶部双卡片 */
+.topCards {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+/* 中间横幅 */
+.bannerWrap {
+  margin-bottom: 32px;
+}
+
+/* 文章卡片网格 */
+.articleGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+/* 公告 + 天气 双卡片 */
+.bottomCards {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.themeRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 响应式 */
+@media (max-width: 900px) {
+  .topCards {
+    flex-direction: column;
+  }
+  .articleGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .content {
+    padding: 40px 16px 24px;
+  }
+  .articleGrid {
+    grid-template-columns: 1fr;
+  }
+  .bottomCards {
+    flex-direction: column;
+  }
+}

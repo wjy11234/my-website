@@ -1,0 +1,51 @@
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  background: rgba(0, 0, 0, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.icon {
+  color: #a78bfa;
+  flex-shrink: 0;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.lyricWrap {
+  flex: 1;
+  overflow: hidden;
+  height: 22px;
+  position: relative;
+  text-align: center;
+}
+
+.lyricLine {
+  font-size: 15px;
+  color: #707070;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  display: inline-block;
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,17 @@
+.pageWrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.pageWrap h1 {
+  font-size: 32px;
+  color: #9cc1f3;
+  margin-bottom: 16px;
+}
+
+.pageWrap p {
+  font-size: 16px;
+  color: #94a3b8;
+  line-height: 1.8;
+}

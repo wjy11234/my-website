@@ -1,0 +1,218 @@
+/* ===== 页面整体 ===== */
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 60px 48px 80px;
+  background: #FAF8F0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  display: flex;
+  gap: 80px;
+  align-items: flex-start;
+  color: #1A1A1A;
+}
+
+/* ===== 左侧主体 ===== */
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 页头 */
+.header {
+  margin-bottom: 48px;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin: 0 0 8px;
+  letter-spacing: 0.5px;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #707070;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.subtitleLink {
+  color: #994433;
+  text-decoration: none;
+}
+
+.subtitleLink:hover {
+  text-decoration: underline;
+}
+
+/* ===== 板块 ===== */
+.section {
+  margin-bottom: 44px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin: 0 0 12px;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #D8D4C8;
+  margin: 0 0 14px;
+}
+
+/* ===== 入场动画 ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animHeader {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.animSection {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+/* ===== 条目行 ===== */
+.itemRow {
+  display: flex;
+  align-items: baseline;
+  padding: 10px 8px;
+  line-height: 1.7;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: border-color 0.15s, background 0.15s;
+  margin: 0 -8px;
+  cursor: pointer;
+}
+
+.itemRow:hover {
+  border-color: #D8D4C8;
+  background: rgba(0, 0, 0, 0.015);
+}
+
+.itemRow::before {
+  content: '';
+}
+
+.itemEmoji {
+  flex-shrink: 0;
+  width: 28px;
+  font-size: 15px;
+  text-align: center;
+}
+
+.itemName {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1A1A1A;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.itemName:hover {
+  text-decoration: underline;
+}
+
+.itemDesc {
+  font-size: 14px;
+  color: #707070;
+  margin-left: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itemSpacer {
+  flex: 1;
+  min-width: 20px;
+}
+
+.itemDomain {
+  font-size: 13px;
+  color: #707070;
+  text-decoration: none;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+a.itemDomain:hover {
+  text-decoration: underline;
+}
+
+.itemDomain.doc {
+  color: #994433;
+}
+
+/* ===== 右侧目录 ===== */
+.toc {
+  width: 160px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 80px;
+}
+
+.tocTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1A1A1A;
+  margin-bottom: 10px;
+}
+
+.tocList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tocItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #707070;
+  cursor: pointer;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.tocItem:hover {
+  color: #1A1A1A;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.tocCount {
+  font-size: 12px;
+  color: #b0b0b0;
+  margin-left: 8px;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 768px) {
+  .page {
+    padding: 32px 18px 60px;
+    flex-direction: column;
+  }
+  .toc {
+    display: none;
+  }
+  .itemDesc {
+    display: none;
+  }
+}
