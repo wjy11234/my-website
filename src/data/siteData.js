@@ -66,7 +66,7 @@ export const shuoshuo = [
     id: 4,
     date: '2026-08-04',
     time: '23:59',
-    content: '这个后端,我chovy',
+    content: '这个云服务器,我chovy',
     tag: '深夜',
   },
   {
@@ -75,6 +75,13 @@ export const shuoshuo = [
     time: '14:20',
     content: '碎碎念页面完成啦,下一个李白就是我。',
     tag: '日常',
+  },
+  {
+    id: 6,
+    date: '2026-08-06',
+    time: '13:20',
+    content: '工具很吊，我用我用。',
+    tag: '工具',
   },
 ]
 
