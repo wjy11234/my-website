@@ -8,6 +8,7 @@ import AlbumGallery from './pages/AlbumGallery'
 import Us from './pages/Us'
 import Tools from './pages/Tools'
 import About from './pages/About'
+import MessageWall from './pages/MessageWall'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/photos" element={<PhotoWall />} />
             <Route path="/photos/:albumId" element={<AlbumGallery />} />
             <Route path="/us" element={<Us />} />
+            <Route path="/message-wall" element={<MessageWall />} />
             <Route path="/tools" element={<Tools />} />
             <Route path="/about" element={<About />} />
           </Route>

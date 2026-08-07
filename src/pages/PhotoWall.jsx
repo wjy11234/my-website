@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
+import NavHeader from '../components/NavHeader'
 import { albums } from '../data/siteData'
 import styles from './PhotoWall.module.css'
 
@@ -60,6 +61,7 @@ function PhotoWall() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.bg} />
+      <NavHeader />
       <div className={styles.page}>
       <div className={styles.topBar}>
         <div className={styles.headerLeft}>

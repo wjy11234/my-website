@@ -1,4 +1,5 @@
 import CursorGrid from '../components/CursorGrid'
+import NavHeader from '../components/NavHeader'
 import ProfileCard from '../components/ProfileCard'
 import MusicPlayerCard from '../components/MusicPlayerCard'
 import BannerBar from '../components/BannerBar'
@@ -14,6 +15,7 @@ import styles from './Home.module.css'
 function Home() {
   return (
     <div className={styles.home}>
+      <NavHeader />
       <CursorGrid
         color="#a78bfa"
         radius={160}

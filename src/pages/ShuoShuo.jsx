@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { shuoshuo } from '../data/siteData'
+import NavHeader from '../components/NavHeader'
 import styles from './ShuoShuo.module.css'
 
 const TAG_COLORS = {
@@ -69,6 +70,7 @@ function ShuoshuoCard({ item, index }) {
 function ShuoShuo() {
   return (
     <div className={styles.page}>
+      <NavHeader />
       <div className={styles.pageInner}>
         <div className={styles.header}>
           <h1 className={styles.title}>碎碎念</h1>

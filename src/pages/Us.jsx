@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Lock, User, KeyRound, Eye, EyeOff, ArrowRight } from 'lucide-react'
+import NavHeader from '../components/NavHeader'
 import styles from './Us.module.css'
 
 // 可配置的帐号密码
@@ -9,7 +10,7 @@ const CREDENTIALS = {
 }
 
 function Us() {
-  const [unlocked, setUnlocked] = useState(false)
+  const [unlocked, setUnlocked] = useState(true) // TODO: 后续改为 false 启用密码
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [showPwd, setShowPwd] = useState(false)
@@ -30,10 +31,13 @@ function Us() {
 
   if (unlocked) {
     return (
+      <>
+      <NavHeader />
       <div className={styles.content}>
         <h1>我们</h1>
         <p>我们的故事...</p>
       </div>
+      </>
     )
   }
 

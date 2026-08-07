@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, X, ChevronLeft, ChevronRight } from 'lucide-react'
+import NavHeader from '../components/NavHeader'
 import { albums } from '../data/siteData'
 import styles from './AlbumGallery.module.css'
 
@@ -40,6 +41,7 @@ function AlbumGallery() {
 
   return (
     <div className={styles.page}>
+      <NavHeader />
       {/* 顶部导航 */}
       <div className={styles.topBar}>
         <button className={styles.backBtn} onClick={() => navigate('/photos')}>

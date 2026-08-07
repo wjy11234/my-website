@@ -1,4 +1,5 @@
 import styles from './Tools.module.css'
+import NavHeader from '../components/NavHeader'
 import TargetCursor from '../components/TargetCursor'
 
 // ===== 数据：按板块组织，后续直接在 items 数组里添加新条目即可 =====
@@ -114,7 +115,9 @@ function Tools() {
   }
 
   return (
-    <div className={styles.page}>
+    <>
+      <NavHeader />
+      <div className={styles.page}>
       {/* TargetCursor 自定义光标 */}
       <TargetCursor
         targetSelector=".cursor-target"
@@ -182,6 +185,7 @@ function Tools() {
         </ul>
       </aside>
     </div>
+    </>
   )
 }
 
