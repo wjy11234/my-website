@@ -1,10 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { Plus, X, Trash2 } from 'lucide-react'
+import { Plus, X, Trash2, MessageCircle, Send } from 'lucide-react'
 import NavHeader from '../components/NavHeader'
 import { supabase } from '../lib/supabase'
 import styles from './MessageWall.module.css'
 
-// 便签背景色池 — 丰富柔色
 const COLORS = [
   '#FFF9C4', '#FFE082', '#FFCC80', '#FFAB91',
   '#F48FB1', '#CE93D8', '#B39DDB', '#90CAF9',
@@ -13,7 +12,6 @@ const COLORS = [
   '#F8BBD0', '#DCEDC8', '#B3E5FC', '#FFECB3',
 ]
 
-// 胶带颜色
 const TAPE_COLORS = [
   'rgba(255,255,255,0.45)', 'rgba(255,235,150,0.55)',
   'rgba(255,200,200,0.45)', 'rgba(200,230,255,0.45)',
@@ -28,31 +26,48 @@ function MessageWall() {
   const [loading, setLoading] = useState(true)
 
   // 拖拽状态
-  const [dragging, setDragging] = useState(null) // { id, offsetX, offsetY }
+  const [dragging, setDragging] = useState(null)
   const wallRef = useRef(null)
   const notesRef = useRef(notes)
   notesRef.current = notes
 
+  // 评论相关
+  const [clickedNote, setClickedNote] = useState(null)
+  const [comments, setComments] = useState({})
+  const [commentDraft, setCommentDraft] = useState('')
+  const dragFlag = useRef(false)
+  const mouseStart = useRef({ x: 0, y: 0 })
+
   const hasSupabase = Boolean(import.meta.env.VITE_SUPABASE_URL)
 
-  // 从 Supabase 加载数据
+  // 加载数据
   const fetchNotes = useCallback(async () => {
     if (!hasSupabase) {
       setLoading(false)
       return
     }
-    const { data } = await supabase
-      .from('messages')
-      .select('*')
-      .order('created_at', { ascending: false })
+    const [notesRes, commentsRes] = await Promise.all([
+      supabase.from('messages').select('*').order('created_at', { ascending: false }),
+      supabase.from('message_comments').select('*').order('created_at', { ascending: true }),
+    ])
 
-    if (data) {
-      setNotes(data.map((n) => ({
+    if (notesRes.data) {
+      setNotes(notesRes.data.map((n) => ({
         ...n,
         x: n.x ?? 24 + Math.random() * 200,
         y: n.y ?? 24 + Math.random() * 200,
       })))
     }
+
+    if (commentsRes.data) {
+      const map = {}
+      commentsRes.data.forEach((c) => {
+        if (!map[c.message_id]) map[c.message_id] = []
+        map[c.message_id].push(c)
+      })
+      setComments(map)
+    }
+
     setLoading(false)
   }, [hasSupabase])
 
@@ -103,8 +118,11 @@ function MessageWall() {
     e.stopPropagation()
     if (hasSupabase) {
       await supabase.from('messages').delete().eq('id', id)
+      await supabase.from('message_comments').delete().eq('message_id', id)
     }
     setNotes(prev => prev.filter(n => n.id !== id))
+    setComments(prev => { const next = { ...prev }; delete next[id]; return next })
+    if (clickedNote?.id === id) setClickedNote(null)
   }
 
   // 键盘提交
@@ -119,10 +137,12 @@ function MessageWall() {
     }
   }
 
-  // ---- 拖拽逻辑 ----
+  // ---- 拖拽 + 点击区分 ----
   const onMouseDown = (e, id) => {
     const note = notes.find(n => n.id === id)
     if (!note) return
+    mouseStart.current = { x: e.clientX, y: e.clientY }
+    dragFlag.current = false
     e.preventDefault()
     setDragging({
       id,
@@ -135,6 +155,10 @@ function MessageWall() {
     if (!dragging) return
 
     const onMove = (e) => {
+      const dx = Math.abs(e.clientX - mouseStart.current.x)
+      const dy = Math.abs(e.clientY - mouseStart.current.y)
+      if (dx > 3 || dy > 3) dragFlag.current = true
+
       setNotes(prev => prev.map(n =>
         n.id === dragging.id
           ? { ...n, x: e.clientX - dragging.offsetX, y: e.clientY - dragging.offsetY }
@@ -142,7 +166,11 @@ function MessageWall() {
       ))
     }
     const onUp = () => {
-      // 保存拖拽结束的位置到后端
+      // 如果不是拖拽，视为点击
+      if (!dragFlag.current && dragging) {
+        const note = notesRef.current.find(n => n.id === dragging.id)
+        if (note) setClickedNote(note)
+      }
       if (hasSupabase && dragging) {
         const note = notesRef.current.find(n => n.id === dragging.id)
         if (note) {
@@ -158,31 +186,83 @@ function MessageWall() {
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('mouseup', onUp)
     }
-  }, [dragging])
+  }, [dragging, hasSupabase])
 
+  // 添加评论
+  const addComment = async () => {
+    const text = commentDraft.trim()
+    if (!text || !clickedNote) return
+
+    const comment = {
+      id: Date.now(),
+      message_id: clickedNote.id,
+      content: text,
+      created_at: new Date().toISOString(),
+    }
+
+    // 先更新本地状态，确保界面立即响应
+    setComments(prev => ({
+      ...prev,
+      [clickedNote.id]: [...(prev[clickedNote.id] || []), comment],
+    }))
+    setCommentDraft('')
+
+    // 后台同步到 Supabase
+    if (hasSupabase) {
+      const { data, error } = await supabase.from('message_comments').insert({
+        message_id: clickedNote.id,
+        content: text,
+      }).select()
+      if (!error && data) {
+        setComments(prev => {
+          const list = prev[clickedNote.id] || []
+          return {
+            ...prev,
+            [clickedNote.id]: list.map(c => c.id === comment.id ? { ...c, id: data[0].id } : c),
+          }
+        })
+      }
+    }
+  }
+
+  // 删除评论
+  const deleteComment = async (commentId) => {
+    if (hasSupabase) {
+      await supabase.from('message_comments').delete().eq('id', commentId)
+    }
+    setComments(prev => ({
+      ...prev,
+      [clickedNote.id]: (prev[clickedNote.id] || []).filter(c => c.id !== commentId),
+    }))
+  }
+
+  const onCommentKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      addComment()
+    }
+  }
+
+  const noteComments = clickedNote ? (comments[clickedNote.id] || []) : []
   const isEmpty = notes.length === 0 && !loading
 
   return (
     <>
       <NavHeader />
       <div className={styles.wall} ref={wallRef}>
-      {/* 网格背景 */}
       <div className={styles.bgGrid} />
 
-      {/* 左上角标题 */}
       <div className={styles.pageTitle}>
         <h1 className={styles.title}>匿名</h1>
-        <p className={styles.subtitle}>（可把开心的或不开心的都说出来）</p>
+        <p className={styles.subtitle}>（把开心的和不开心的都说出来）</p>
       </div>
 
-      {/* 空状态 */}
       {isEmpty && !showInput && (
         <div className={styles.empty}>
           <p>还没有留言，点击右下角+贴上第一张便签吧 ✍️</p>
         </div>
       )}
 
-      {/* 便签墙 */}
       <div className={styles.noteArea}>
         {notes.map((note) => (
           <div
@@ -196,24 +276,35 @@ function MessageWall() {
             }}
             onMouseDown={(e) => onMouseDown(e, note.id)}
           >
-            {/* 透明胶带 */}
             <div
               className={styles.tape}
               style={{ background: note.tape || 'rgba(255,255,255,0.4)' }}
             />
             <p className={styles.noteText}>{note.content}</p>
-            <button
-              className={styles.deleteBtn}
-              onClick={(e) => deleteNote(e, note.id)}
-              title="删除"
-            >
-              <Trash2 size={14} />
-            </button>
+            <div className={styles.noteActions}>
+              <button
+                className={styles.commentHintBtn}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  e.preventDefault()
+                  setClickedNote(note)
+                }}
+              >
+                <MessageCircle size={13} />
+                <span>{(comments[note.id] || []).length || ''}</span>
+              </button>
+              <button
+                className={styles.deleteBtn}
+                onClick={(e) => deleteNote(e, note.id)}
+                title="删除"
+              >
+                <Trash2 size={14} />
+              </button>
+            </div>
           </div>
         ))}
       </div>
 
-      {/* 浮动按钮 */}
       {!showInput && (
         <button className={styles.addBtn} onClick={() => setShowInput(true)}>
           <Plus size={24} />
@@ -243,6 +334,81 @@ function MessageWall() {
               <span className={styles.charCount}>{draft.length}/200</span>
               <button className={styles.submitBtn} onClick={addNote} disabled={!draft.trim()}>
                 贴上
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 评论详情浮层 */}
+      {clickedNote && (
+        <div className={styles.overlay} onClick={() => setClickedNote(null)}>
+          <div
+            className={styles.commentCard}
+            onClick={e => e.stopPropagation()}
+            style={{ ...(clickedNote.color ? { '--note-color': clickedNote.color } : {}) }}
+          >
+            {/* 头部 */}
+            <div className={styles.commentHeader}>
+              <span className={styles.commentHeaderLabel}>留言详情</span>
+              <button className={styles.closeBtn} onClick={() => setClickedNote(null)}>
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* 便签内容 */}
+            <div className={styles.commentNotePreview}>
+              <p>{clickedNote.content}</p>
+            </div>
+
+            {/* 评论列表 */}
+            <div className={styles.commentList}>
+              <h4 className={styles.commentListTitle}>评论 ({noteComments.length})</h4>
+              {noteComments.length === 0 && (
+                <p className={styles.noComment}>暂无评论，来写第一条吧</p>
+              )}
+              {noteComments.map((c) => (
+                <div key={c.id} className={styles.commentItem}>
+                  <div className={styles.commentContent}>
+                    <p>{c.content}</p>
+                    <span className={styles.commentTime}>
+                      {new Date(c.created_at).toLocaleString('zh-CN', {
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                  </div>
+                  <button
+                    className={styles.commentDeleteBtn}
+                    onClick={() => deleteComment(c.id)}
+                    title="删除评论"
+                  >
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* 评论输入 */}
+            <div className={styles.commentInputArea}>
+              <input
+                className={styles.commentInput}
+                placeholder="写下你的评论..."
+                value={commentDraft}
+                onChange={e => setCommentDraft(e.target.value)}
+                onKeyDown={onCommentKeyDown}
+                maxLength={300}
+                autoFocus
+              />
+              <button
+                className={styles.commentSendBtn}
+                onClick={addComment}
+                disabled={!commentDraft.trim()}
+              >
+                <Send size={14} />
+                发送
               </button>
             </div>
           </div>
