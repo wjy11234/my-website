@@ -58,7 +58,7 @@ function ProfileCard() {
         </div>
         <div className={styles.statItem}>
           <span className={styles.statNum}>杂谈</span>
-          <span className={styles.statValue} style={{ color: '#38bdf8' }}>5</span>
+          <span className={styles.statValue} style={{ color: '#38bdf8' }}>7</span>
         </div>
         <div className={styles.statItem}>
           <span className={styles.statNum}>照片</span>

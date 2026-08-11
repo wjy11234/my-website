@@ -83,6 +83,13 @@ export const shuoshuo = [
     content: '工具很吊，我用我用。',
     tag: '工具',
   },
+  {
+    id: 6,
+    date: '2026-08-11',
+    time: '22:00',
+    content: '难受,靠',
+    tag: '日常',
+  },
 ]
 
 // 相册数据
@@ -140,7 +147,7 @@ export const announcement = {
 
 // 歌词数据（时间单位：秒）
 export const lyrics = [
-  { time: 0, text: '只能听这一首歌,后面会更新哟' },
+  { time: 0, text: '前奏🎧' },
   { time: 20.74, text: '谢谢你曾陪我走过的路' },
   { time: 24.8, text: '今天只剩你一个人走' },
   { time: 30.2, text: '再好的故事终究要结束' },
@@ -180,4 +187,74 @@ export const lyrics = [
   { time: 216.94, text: '你不要忘了我' },
   { time: 237, text: '勿忘我' },
   { time: 241.6, text: 'Yo De Lay Lay Lay' },
+]
+
+// Begging You 歌词
+export const lyricsBeggingYou = [
+  { time: 0, text: '前奏🎧' },
+  { time: 49.05, text: 'Came to my life so suddenly' },
+  { time: 53.13, text: 'And now you\'re leaving me' },
+  { time: 56.68, text: 'I\'m begging you' },
+  { time: 60.59, text: 'never and never consider this' },
+  { time: 64.21, text: 'There is no tomorrow' },
+  { time: 67.15, text: 'You know time is our enemy' },
+  { time: 70.45, text: 'So be true' },
+  { time: 72.57, text: 'And I\'ll be with you' },
+  { time: 74.43, text: 'And I will love you' },
+  { time: 79.05, text: 'Don\'t tell me you have to leave' },
+  { time: 86.05, text: 'You know we\'ll fall apart' },
+  { time: 88.96, text: 'as soon as you leave yeah' },
+  { time: 93.17, text: 'Don\'t tell me that you love me' },
+  { time: 96.13, text: 'To get out' },
+  { time: 97.92, text: 'To get away now' },
+  { time: 100.02, text: 'There\'s no going back to' },
+  { time: 101.48, text: 'I\'m not gonna let you' },
+  { time: 103.26, text: 'I\'m won\'t let you go' },
+  { time: 106.33, text: 'I love you' },
+  { time: 109.86, text: 'I need you' },
+  { time: 114.14, text: 'Isn\'t that just good enough for you' },
+  { time: 117.52, text: 'Together' },
+  { time: 119.32, text: 'We\'re together' },
+  { time: 121.45, text: 'If you walk out on me now' },
+  { time: 124.88, text: 'I won\'t be with you' },
+  { time: 129.68, text: 'Came to my life so suddenly' },
+  { time: 133.67, text: 'And now you\'re leaving me' },
+  { time: 136.91, text: 'I\'m begging you' },
+  { time: 140.74, text: 'never and never consider this' },
+  { time: 144.4, text: 'There is no tomorrow' },
+  { time: 147.43, text: 'You know time is our enemy' },
+  { time: 150.81, text: 'So be true' },
+  { time: 153.02, text: 'And I\'ll be with you' },
+  { time: 154.75, text: 'And I will love you' },
+  { time: 159.05, text: 'Things all just got crazy' },
+  { time: 162.25, text: 'Living in uncertainty' },
+  { time: 166.06, text: 'I\'ve been so weary of' },
+  { time: 169.13, text: 'losing time with you' },
+  { time: 175.92, text: 'Came to my life so suddenly' },
+  { time: 179.87, text: 'And now you\'re leaving me' },
+  { time: 183.33, text: 'I\'m begging you' },
+  { time: 187.35, text: 'never and never consider this' },
+  { time: 190.81, text: 'There is no tomorrow' },
+  { time: 193.73, text: 'You know time is our enemy' },
+  { time: 197.25, text: 'So be true' },
+  { time: 199.2, text: 'And I\'ll be with you' },
+  { time: 201.23, text: 'And I will love you' },
+]
+
+// 歌曲列表
+export const songs = [
+  {
+    title: '勿忘我',
+    artist: '陶喆',
+    src: '/陶喆 - 勿忘我.mp3',
+    lyrics: lyrics,
+    lyricsIndex: 0,
+  },
+  {
+    title: 'Begging You (Guide Ver.)',
+    artist: '2Lson',
+    src: '/2Lson - Begging You (Guide Ver.) (Bonus Track).mp3',
+    lyrics: lyricsBeggingYou,
+    lyricsIndex: 1,
+  },
 ]

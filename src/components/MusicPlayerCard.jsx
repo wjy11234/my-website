@@ -3,7 +3,7 @@ import { Play, Pause, SkipBack, SkipForward } from 'lucide-react'
 import SpotlightCard from './SpotlightCard'
 import { resumeAudioCtx } from './Spectrum'
 import styles from './MusicPlayerCard.module.css'
-import { PLACEHOLDER } from '../data/siteData'
+import { PLACEHOLDER, songs } from '../data/siteData'
 
 function formatTime(seconds) {
   if (!seconds || !isFinite(seconds)) return '00:00'
@@ -17,9 +17,12 @@ function MusicPlayerCard() {
   const [progress, setProgress] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
+  const [songIndex, setSongIndex] = useState(0)
   const progressRef = useRef(null)
   const dragging = useRef(false)
   const audioRef = useRef(null)
+
+  const currentSong = songs[songIndex]
 
   const updateProgress = () => {
     const audio = audioRef.current
@@ -34,7 +37,11 @@ function MusicPlayerCard() {
     if (audio) setDuration(audio.duration)
   }
 
-  const handleEnded = () => setPlaying(false)
+  const handleEnded = () => {
+    setPlaying(false)
+    // 自动切下一首
+    setSongIndex((prev) => (prev + 1) % songs.length)
+  }
 
   const handleProgress = useCallback((e) => {
     const rect = progressRef.current.getBoundingClientRect()
@@ -72,6 +79,14 @@ function MusicPlayerCard() {
     setPlaying(!playing)
   }
 
+  const prevSong = () => {
+    setSongIndex((prev) => (prev - 1 + songs.length) % songs.length)
+  }
+
+  const nextSong = () => {
+    setSongIndex((prev) => (prev + 1) % songs.length)
+  }
+
   return (
     <SpotlightCard
       className={styles.card}
@@ -79,12 +94,20 @@ function MusicPlayerCard() {
     >
       <audio
         ref={audioRef}
-        src="/陶喆 - 勿忘我.mp3"
+        src={currentSong.src}
+        data-lyrics-index={currentSong.lyricsIndex}
         onTimeUpdate={updateProgress}
         onLoadedMetadata={handleLoaded}
         onEnded={handleEnded}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
+        // 歌曲切换时自动播放
+        onCanPlay={() => {
+          const audio = audioRef.current
+          if (audio && playing) {
+            audio.play().catch(() => {})
+          }
+        }}
       />
 
       <div className={styles.coverRow}>
@@ -92,8 +115,8 @@ function MusicPlayerCard() {
           <img src={PLACEHOLDER.albumCover} alt="cover" />
         </div>
         <div className={styles.songInfo}>
-          <h3 className={styles.songTitle}>勿忘我</h3>
-          <p className={styles.artist}>陶喆</p>
+          <h3 className={styles.songTitle}>{currentSong.title}</h3>
+          <p className={styles.artist}>{currentSong.artist}</p>
         </div>
       </div>
 
@@ -107,11 +130,11 @@ function MusicPlayerCard() {
       </div>
 
       <div className={styles.controls}>
-        <button className={styles.ctrlBtn}><SkipBack size={18} /></button>
+        <button className={styles.ctrlBtn} onClick={prevSong}><SkipBack size={18} /></button>
         <button className={styles.playBtn} onClick={togglePlay}>
           {playing ? <Pause size={20} /> : <Play size={20} />}
         </button>
-        <button className={styles.ctrlBtn}><SkipForward size={18} /></button>
+        <button className={styles.ctrlBtn} onClick={nextSong}><SkipForward size={18} /></button>
       </div>
     </SpotlightCard>
   )

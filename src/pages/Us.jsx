@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import NavHeader from '../components/NavHeader'
 import styles from './Us.module.css'
@@ -114,6 +114,19 @@ function Us() {
   const [loginError, setLoginError] = useState('')
   const [selectedId, setSelectedId] = useState(null)
   const [ripples, setRipples] = useState([])
+  const [scrollY, setScrollY] = useState(0)
+
+  // 监听滚动
+  useEffect(() => {
+    const onScroll = () => setScrollY(window.scrollY)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // 图片位置计算：scrollY 0→500，top 从 -200→0
+  const decoTop = scrollY <= 500
+    ? -200 + (scrollY / 500) * 200
+    : null
 
   const selectedEnvelope = ENVELOPES.find((e) => e.id === selectedId)
 
@@ -261,6 +274,18 @@ function Us() {
           </div>
         </div>
       )}
+
+      {/* 滚动装饰挂件 */}
+      <img
+        src="/deco-scroll1.png"
+        alt=""
+        className={styles.scrollDeco}
+        style={
+          decoTop !== null
+            ? { top: `${decoTop}px`, right: 20 }
+            : { bottom: 20, right: 20 }
+        }
+      />
     </div>
   )
 }
