@@ -3,7 +3,8 @@ import { Play, Pause, SkipBack, SkipForward } from 'lucide-react'
 import SpotlightCard from './SpotlightCard'
 import { resumeAudioCtx } from './Spectrum'
 import styles from './MusicPlayerCard.module.css'
-import { PLACEHOLDER, songs } from '../data/siteData'
+import { PLACEHOLDER } from '../data/placeholder'
+import { songs } from '../data/songs'
 
 function formatTime(seconds) {
   if (!seconds || !isFinite(seconds)) return '00:00'

@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import SpotlightCard from './SpotlightCard'
 import { Code2, Settings, ExternalLink, Mail, MessageCircle, Share2 } from 'lucide-react'
 import styles from './ProfileCard.module.css'
-import { PLACEHOLDER } from '../data/siteData'
+import { PLACEHOLDER } from '../data/placeholder'
 
 const WECHAT_ID = 'Wujy9277'
 const EMAIL = '3034485397@qq.com'

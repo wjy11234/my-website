@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { Music } from 'lucide-react'
 import Spectrum from './Spectrum'
 import styles from './BannerBar.module.css'
-import { lyrics, lyricsBeggingYou } from '../data/siteData'
+import { lyrics, lyricsBeggingYou } from '../data/lyrics'
 
 function BannerBar() {
   const [currentIndex, setCurrentIndex] = useState(-1)

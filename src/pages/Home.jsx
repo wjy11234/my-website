@@ -11,7 +11,7 @@ import FloatingButtons from '../components/FloatingButtons'
 import SiteFooter from '../components/SiteFooter'
 import SpiderPet from '../components/SpiderPet'
 import Live2DWidget from '../components/Live2DWidget'
-import { articles } from '../data/siteData'
+import { articles } from '../data/articles'
 import styles from './Home.module.css'
 
 function Home() {

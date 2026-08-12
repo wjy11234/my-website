@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { shuoshuo } from '../data/siteData'
+import { shuoshuo } from '../data/shuoshuo'
 import NavHeader from '../components/NavHeader'
 import styles from './ShuoShuo.module.css'
 

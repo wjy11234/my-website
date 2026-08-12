@@ -1,6 +1,6 @@
 import SpotlightCard from './SpotlightCard'
 import { Megaphone } from 'lucide-react'
-import { announcement } from '../data/siteData'
+import { announcement } from '../data/announcement'
 import styles from './AnnouncementCard.module.css'
 
 function AnnouncementCard() {

@@ -3,7 +3,7 @@
   min-height: 100vh;
   background: 
     linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.85) 100%),
-    url('/wallhaven1.png') center/cover no-repeat fixed;
+    url('/wallhaven1.webp') center/cover no-repeat fixed;
   padding: 0;
 }
 

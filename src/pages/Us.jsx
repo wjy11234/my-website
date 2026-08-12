@@ -1,150 +1,43 @@
-import { useState, useCallback, useEffect } from 'react'
-import { ArrowLeft } from 'lucide-react'
+import { useState } from 'react'
 import NavHeader from '../components/NavHeader'
+import InfiniteMenu from '../components/InfiniteMenu'
 import styles from './Us.module.css'
 
 const AUTH_ACCOUNT = 'wujj'
 const AUTH_PASSWORD = '09876'
 
-// 花瓣数据
-const PETALS = Array.from({ length: 30 }, (_, i) => ({
-  id: i,
-  left: Math.random() * 100,
-  delay: Math.random() * 15,
-  duration: 8 + Math.random() * 10,
-  size: 12 + Math.random() * 14,
-  opacity: 0.3 + Math.random() * 0.4,
-  rotate: Math.random() * 360,
-}))
-
-// 信封数据 — 后续在此新增即可
-const ENVELOPES = [
+const items = [
   {
-    id: 1,
-    coverImage: '/letter.png',
-    letterImage: '/track-26128096.jpg',
-    title: '致 最特别的你',
-    content: [
-      '该怎么形容你呢？',
-      '像清晨六点半的咖啡香气，\n像键盘敲击间隙的温柔思绪，\n像代码编译通过时的那一声叮。',
-      '每次 git commit 的时候，\n都想把心情也一起提交。\n每行 Console.log 里，\n藏的都是想对你说的话。',
-    ],
-    signature: '你好，我的 main 分支。',
-    author: '— Your Dev',
+    image: 'https://images.unsplash.com/photo-1782977389500-dd7adad33ebe?q=80&w=600&h=600&fit=crop&sat=-100&auto=format',
+    link: 'https://google.com/',
+    title: 'Item 1',
+    description: 'This is pretty cool, right?'
   },
   {
-    id: 2,
-    coverImage: '/wallheaven-6.png',
-    letterImage: '/wallheaven-6.png',
-    title: '致 第二封信',
-    content: [
-      '这是第二封信的内容。',
-      '你可以在这里写任何你想说的话。',
-    ],
-    signature: '期待你的回信。',
-    author: '— Yours',
+    image: 'https://images.unsplash.com/photo-1781499455083-6ccc3beb20cd?q=80&w=600&h=600&fit=crop&sat=-100&auto=format',
+    link: 'https://google.com/',
+    title: 'Item 2',
+    description: 'This is pretty cool, right?'
   },
   {
-    id: 3,
-    coverImage: '/wallheaven-6.png',
-    letterImage: '/wallheaven-6.png',
-    title: '致 第三封信',
-    content: [
-      '这是第三封信的内容。',
-      '回忆总是温暖的。',
-    ],
-    signature: '时光不老。',
-    author: '— Forever',
+    image: 'https://images.unsplash.com/photo-1776394254711-4a0d7345269a?q=80&w=600&h=600&fit=crop&sat=-100&auto=format',
+    link: 'https://google.com/',
+    title: 'Item 3',
+    description: 'This is pretty cool, right?'
   },
   {
-    id: 4,
-    coverImage: '/wallheaven-6.png',
-    letterImage: '/wallheaven-6.png',
-    title: '致 第四封信',
-    content: [
-      '这是第四封信的内容。',
-      '每一个瞬间都值得记录。',
-    ],
-    signature: '岁月静好。',
-    author: '— Peace',
-  },
-  {
-    id: 5,
-    coverImage: '/wallheaven-6.png',
-    letterImage: '/wallheaven-6.png',
-    title: '致 第五封信',
-    content: [
-      '这是第五封信的内容。',
-      '未来还有很多故事要一起写。',
-    ],
-    signature: '未完待续。',
-    author: '— To be continued',
-  },
-  {
-    id: 6,
-    coverImage: '/wallheaven-6.png',
-    letterImage: '/wallheaven-6.png',
-    title: '致 第六封信',
-    content: [
-      '这是第六封信的内容。',
-      '谢谢你一直在我身边。',
-    ],
-    signature: '感恩遇见。',
-    author: '— Grateful',
-  },
+    image: 'https://images.unsplash.com/photo-1781242629922-6f39cc3671cd?q=80&w=600&h=600&fit=crop&sat=-100&auto=format',
+    link: 'https://google.com/',
+    title: 'Item 4',
+    description: 'This is pretty cool, right?'
+  }
 ]
-
-// 点击涟漪
-function LoveRipple({ x, y, id }) {
-  return (
-    <span
-      className={styles.loveRipple}
-      style={{ left: x, top: y }}
-      key={id}
-    >
-      我喜欢你
-    </span>
-  )
-}
 
 function Us() {
   const [authenticated, setAuthenticated] = useState(false)
   const [account, setAccount] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState('')
-  const [selectedId, setSelectedId] = useState(null)
-  const [ripples, setRipples] = useState([])
-  const [scrollY, setScrollY] = useState(0)
-
-  // 监听滚动
-  useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  // 图片位置计算：scrollY 0→500，top 从 -200→0
-  const decoTop = scrollY <= 500
-    ? -200 + (scrollY / 500) * 200
-    : null
-
-  const selectedEnvelope = ENVELOPES.find((e) => e.id === selectedId)
-
-  const handleOpen = (id) => {
-    setSelectedId(id)
-  }
-
-  const handleBack = () => {
-    setSelectedId(null)
-  }
-
-  const handleClick = useCallback((e) => {
-    const id = Date.now() + Math.random()
-    setRipples((prev) => [...prev, { x: e.clientX, y: e.clientY, id }])
-    setTimeout(() => {
-      setRipples((prev) => prev.filter((r) => r.id !== id))
-    }, 2000)
-  }, [])
 
   const handleLogin = (e) => {
     e.preventDefault()
@@ -160,7 +53,6 @@ function Us() {
     if (e.key === 'Enter') handleLogin(e)
   }
 
-  // 未登录，显示登录页面
   if (!authenticated) {
     return (
       <div className={styles.page}>
@@ -195,97 +87,11 @@ function Us() {
   }
 
   return (
-    <div className={styles.page} onClick={handleClick}>
+    <div className={styles.page}>
       <NavHeader />
-
-      {/* 花瓣粒子 */}
-      <div className={styles.petals}>
-        {PETALS.map((p) => (
-          <div
-            key={p.id}
-            className={styles.petal}
-            style={{
-              left: `${p.left}%`,
-              animationDelay: `${p.delay}s`,
-              animationDuration: `${p.duration}s`,
-              width: p.size,
-              height: p.size,
-              opacity: p.opacity,
-              transform: `rotate(${p.rotate}deg)`,
-            }}
-          />
-        ))}
+      <div style={{ height: '600px', position: 'relative', marginTop: 20 }}>
+        <InfiniteMenu items={items} />
       </div>
-
-      {/* 点击涟漪 */}
-      {ripples.map((r) => (
-        <LoveRipple key={r.id} x={r.x} y={r.y} id={r.id} />
-      ))}
-
-      {/* 信封列表 */}
-      {!selectedEnvelope && (
-        <div className={styles.envelopeGridWrap}>
-          <p className={styles.gridHint}>
-            💌 戳一下信封，解锁一只野生的开发者
-          </p>
-          <div className={styles.envelopeGrid}>
-            {ENVELOPES.map((env) => (
-              <div
-                key={env.id}
-                className={styles.envelopeCard}
-                onClick={() => handleOpen(env.id)}
-              >
-                <img
-                  src={env.coverImage}
-                  alt={`信封 ${env.id}`}
-                  className={styles.envelopeCover}
-                />
-                <div className={styles.envelopeOverlay}>
-                  <span className={styles.envelopeStampIcon}>💌</span>
-                  <span className={styles.envelopeLabel}>拆开看看</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 信件内容 */}
-      {selectedEnvelope && (
-        <div className={styles.letterWrap}>
-          <button className={styles.backBtn} onClick={handleBack}>
-            <ArrowLeft size={18} />
-            返回信封
-          </button>
-          <div className={styles.letterCard}>
-            <div className={styles.letterImage}>
-              <img src={selectedEnvelope.letterImage} alt="照片" />
-            </div>
-            <div className={styles.letterText}>
-              <h2 className={styles.letterTitle}>{selectedEnvelope.title}</h2>
-              {selectedEnvelope.content.map((p, i) => (
-                <p key={i} style={{ whiteSpace: 'pre-line' }}>{p}</p>
-              ))}
-              <p className={styles.signature}>
-                {selectedEnvelope.signature}<br />
-                <span>{selectedEnvelope.author}</span>
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 滚动装饰挂件 */}
-      <img
-        src="/deco-scroll1.png"
-        alt=""
-        className={styles.scrollDeco}
-        style={
-          decoTop !== null
-            ? { top: `${decoTop}px`, right: 20 }
-            : { bottom: 20, right: 20 }
-        }
-      />
     </div>
   )
 }

@@ -43,7 +43,7 @@ function Live2DWidget() {
       HIT_AREA_HEAD: 'head',
       HIT_AREA_BODY: 'body',
       SCALE: 1,
-      IS_PLAY_AUDIO: true,
+      IS_PLAY_AUDIO: false,
       AUDIO_ID: 'my_audio',
     }
 
@@ -63,18 +63,25 @@ function Live2DWidget() {
     const onDocMouse = (e) => {
       const canvas = document.getElementById('live2d-canvas')
       if (!canvas) return
-      const evt = new MouseEvent('mousemove', {
-        clientX: e.clientX,
-        clientY: e.clientY,
-        bubbles: true,
-      })
-      canvas.dispatchEvent(evt)
+      try {
+        const evt = new MouseEvent('mousemove', {
+          clientX: e.clientX,
+          clientY: e.clientY,
+          bubbles: false,
+        })
+        canvas.dispatchEvent(evt)
+      } catch {
+        // Live2D 模型未就绪，忽略
+      }
     }
 
     const onDocMouseUp = () => {
       const canvas = document.getElementById('live2d-canvas')
-      if (canvas) {
-        canvas.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
+      if (!canvas) return
+      try {
+        canvas.dispatchEvent(new MouseEvent('mouseup', { bubbles: false }))
+      } catch {
+        // Live2D 模型未就绪，忽略
       }
     }
 

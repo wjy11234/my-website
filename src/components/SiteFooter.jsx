@@ -54,7 +54,7 @@ function SiteFooter() {
     <footer className={styles.footer}>
       {/* 底部装饰图 */}
       <div className={styles.bottomImage}>
-        <img src="/animals.png" alt="animals" className={styles.animalsImg} />
+        <img src="/animals.webp" alt="animals" className={styles.animalsImg} />
       </div>
 
       <div className={styles.inner}>
