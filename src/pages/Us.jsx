@@ -3,8 +3,8 @@ import NavHeader from '../components/NavHeader'
 import InfiniteMenu from '../components/InfiniteMenu'
 import styles from './Us.module.css'
 
-const AUTH_ACCOUNT = 'wujj'
-const AUTH_PASSWORD = '09876'
+const AUTH_ACCOUNT = import.meta.env.VITE_AUTH_ACCOUNT || ''
+const AUTH_PASSWORD = import.meta.env.VITE_AUTH_PASSWORD || ''
 
 const items = [
   {

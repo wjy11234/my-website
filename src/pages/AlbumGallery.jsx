@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, X, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react'
 import NavHeader from '../components/NavHeader'
-import { albums as fallbackAlbums } from '../data/albums'
 import { supabase } from '../lib/supabase'
 import styles from './AlbumGallery.module.css'
 
@@ -18,9 +17,8 @@ function AlbumGallery() {
   useEffect(() => {
     const fetchAlbum = async () => {
       if (!hasSupabase) {
-        const fallback = fallbackAlbums.find((a) => a.id === Number(albumId))
-        setAlbum(fallback || null)
-        setPhotos(fallback ? (fallback.photos || [fallback.cover]).map((url) => ({ id: null, url })) : [])
+        setAlbum(null)
+        setPhotos([])
         setLoading(false)
         return
       }
@@ -33,9 +31,8 @@ function AlbumGallery() {
 
       if (error || !data) {
         console.error('加载相册失败:', error)
-        const fallback = fallbackAlbums.find((a) => a.id === Number(albumId))
-        setAlbum(fallback || null)
-        setPhotos(fallback ? (fallback.photos || [fallback.cover]).map((url) => ({ id: null, url })) : [])
+        setAlbum(null)
+        setPhotos([])
         setLoading(false)
         return
       }
@@ -109,12 +106,25 @@ function AlbumGallery() {
     if (!photo.id) return
     if (!window.confirm('确定删除这张图片吗？')) return
 
+    // 从 URL 提取文件名，删除 Storage 里的文件
+    const fileName = photo.url.split('/').pop().split('?')[0]
+
     const { error } = await supabase.from('album_photos').delete().eq('id', photo.id)
     if (error) {
       console.error('删除失败:', error)
       alert('删除失败，请查看控制台')
       return
     }
+
+    if (fileName) {
+      const { error: storageError } = await supabase.storage
+        .from('publicphotos')
+        .remove([fileName])
+      if (storageError) {
+        console.error('删除图片文件失败:', storageError)
+      }
+    }
+
     setPhotos((prev) => prev.filter((p) => p.id !== photo.id))
   }
 
@@ -144,7 +154,7 @@ function AlbumGallery() {
             style={{ '--stagger': `${i * 0.08}s` }}
           >
             <img src={photo.url} alt={`${album.name} - ${i + 1}`} loading="lazy" />
-            {photo.id && (
+            {album.name === '公共图片' && photo.id && (
               <button
                 className={styles.deleteBtn}
                 onClick={(e) => deletePhoto(e, photo)}

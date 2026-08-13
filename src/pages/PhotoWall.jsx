@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, Upload } from 'lucide-react'
 import NavHeader from '../components/NavHeader'
-import { albums as fallbackAlbums } from '../data/albums'
 import { supabase } from '../lib/supabase'
 import styles from './PhotoWall.module.css'
 
@@ -146,7 +145,7 @@ function PhotoWall() {
   useEffect(() => {
     const fetchAlbums = async () => {
       if (!hasSupabase) {
-        setAlbums(fallbackAlbums)
+        setAlbums([])
         setLoading(false)
         return
       }
@@ -157,17 +156,15 @@ function PhotoWall() {
 
       if (error) {
         console.error('加载相册失败:', error)
-        setAlbums(fallbackAlbums)
-      } else if (data && data.length > 0) {
-        setAlbums(data.map((a) => ({
+        setAlbums([])
+      } else {
+        setAlbums((data || []).map((a) => ({
           id: a.id,
           name: a.name,
           date: a.date,
           desc: a.description,
           cover: a.cover,
         })))
-      } else {
-        setAlbums(fallbackAlbums)
       }
       setLoading(false)
     }
