@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import NavHeader from '../components/NavHeader'
-import InfiniteMenu from '../components/InfiniteMenu'
+import DriftWall from '../components/DriftWall'
 import styles from './Us.module.css'
 
 const AUTH_ACCOUNT = import.meta.env.VITE_AUTH_ACCOUNT || ''
@@ -8,28 +8,79 @@ const AUTH_PASSWORD = import.meta.env.VITE_AUTH_PASSWORD || ''
 
 const items = [
   {
-    image: 'https://images.unsplash.com/photo-1782977389500-dd7adad33ebe?q=80&w=600&h=600&fit=crop&sat=-100&auto=format',
-    link: 'https://google.com/',
-    title: 'Item 1',
-    description: 'This is pretty cool, right?'
+    image: 'https://picsum.photos/id/1015/600/400',
+    title: 'Mountain Lake',
+    href: 'https://google.com/'
   },
   {
-    image: 'https://images.unsplash.com/photo-1781499455083-6ccc3beb20cd?q=80&w=600&h=600&fit=crop&sat=-100&auto=format',
-    link: 'https://google.com/',
-    title: 'Item 2',
-    description: 'This is pretty cool, right?'
+    image: 'https://picsum.photos/id/1025/600/400',
+    title: 'Autumn Trail',
+    href: 'https://google.com/'
   },
   {
-    image: 'https://images.unsplash.com/photo-1776394254711-4a0d7345269a?q=80&w=600&h=600&fit=crop&sat=-100&auto=format',
-    link: 'https://google.com/',
-    title: 'Item 3',
-    description: 'This is pretty cool, right?'
+    image: 'https://picsum.photos/id/1039/600/400',
+    title: 'Desert Dunes',
+    href: 'https://google.com/'
   },
   {
-    image: 'https://images.unsplash.com/photo-1781242629922-6f39cc3671cd?q=80&w=600&h=600&fit=crop&sat=-100&auto=format',
-    link: 'https://google.com/',
-    title: 'Item 4',
-    description: 'This is pretty cool, right?'
+    image: 'https://picsum.photos/id/1043/600/400',
+    title: 'Forest Path',
+    href: 'https://google.com/'
+  },
+  {
+    image: 'https://picsum.photos/id/1044/600/400',
+    title: 'Misty Valley',
+    href: 'https://google.com/'
+  },
+  {
+    image: 'https://picsum.photos/id/1050/600/400',
+    title: 'City Lights',
+    href: 'https://google.com/'
+  },
+  {
+    image: 'https://picsum.photos/id/1062/600/400',
+    title: 'Ocean View',
+    href: 'https://google.com/'
+  },
+  {
+    image: 'https://picsum.photos/id/1069/600/400',
+    title: 'Canyon River',
+    href: 'https://google.com/'
+  },
+  {
+    image: 'https://picsum.photos/id/1074/600/400',
+    title: 'Snow Peak',
+    href: 'https://google.com/'
+  },
+  {
+    image: 'https://picsum.photos/id/1080/600/400',
+    title: 'Green Hills',
+    href: 'https://google.com/'
+  },
+  {
+    image: 'https://picsum.photos/id/1084/600/400',
+    title: 'Waterfall',
+    href: 'https://google.com/'
+  },
+  {
+    image: 'https://picsum.photos/id/106/600/400',
+    title: 'Flower Field',
+    href: 'https://google.com/'
+  },
+  {
+    image: 'https://picsum.photos/id/110/600/400',
+    title: 'Lavender',
+    href: 'https://google.com/'
+  },
+  {
+    image: 'https://picsum.photos/id/133/600/400',
+    title: 'Coastline',
+    href: 'https://google.com/'
+  },
+  {
+    image: 'https://picsum.photos/id/164/600/400',
+    title: 'Sunset Bay',
+    href: 'https://google.com/'
   }
 ]
 
@@ -89,8 +140,16 @@ function Us() {
   return (
     <div className={styles.page}>
       <NavHeader />
-      <div style={{ height: '600px', position: 'relative', marginTop: 20 }}>
-        <InfiniteMenu items={items} />
+      <div style={{ height: 'calc(100vh - 80px)', position: 'relative', marginTop: 20 }}>
+        <DriftWall
+          items={items}
+          columns={7}
+          speed={38}
+          direction="up"
+          dim={0.45}
+          fade={0.55}
+          overlayColor="#1a1a2e"
+        />
       </div>
     </div>
   )

@@ -5,7 +5,7 @@ export const songs = [
   {
     title: '勿忘我',
     artist: '陶喆',
-    src: '/陶喆 - 勿忘我.mp3',
+    src: '/taozhe-wuwangwo.mp3',
     lyrics: lyrics,
     lyricsIndex: 0,
   },

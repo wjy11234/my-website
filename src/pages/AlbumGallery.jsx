@@ -67,9 +67,12 @@ function AlbumGallery() {
 
   if (loading) {
     return (
-      <div className={styles.page}>
-        <div className={styles.empty}>
-          <p>加载中...</p>
+      <div className={styles.wrapper}>
+        <div className={styles.bg} />
+        <div className={styles.page}>
+          <div className={styles.empty}>
+            <p>加载中...</p>
+          </div>
         </div>
       </div>
     )
@@ -77,12 +80,15 @@ function AlbumGallery() {
 
   if (!album) {
     return (
-      <div className={styles.page}>
-        <div className={styles.empty}>
-          <p>相册不存在</p>
-          <button className={styles.backBtn} onClick={() => navigate('/photos')}>
-            返回画廊
-          </button>
+      <div className={styles.wrapper}>
+        <div className={styles.bg} />
+        <div className={styles.page}>
+          <div className={styles.empty}>
+            <p>相册不存在</p>
+            <button className={styles.backBtn} onClick={() => navigate('/photos')}>
+              返回画廊
+            </button>
+          </div>
         </div>
       </div>
     )
@@ -129,8 +135,10 @@ function AlbumGallery() {
   }
 
   return (
-    <div className={styles.page}>
+    <div className={styles.wrapper}>
+      <div className={styles.bg} />
       <NavHeader />
+      <div className={styles.page}>
       {/* 顶部导航 */}
       <div className={styles.topBar}>
         <button className={styles.backBtn} onClick={() => navigate('/photos')}>
@@ -194,6 +202,7 @@ function AlbumGallery() {
           </div>
         </div>
       )}
+    </div>
     </div>
   )
 }

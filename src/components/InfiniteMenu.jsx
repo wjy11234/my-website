@@ -486,6 +486,10 @@ class InfiniteGridMenu {
   }
 
   #init(onInit) {
+    // 确保 canvas 有尺寸后再获取 WebGL context
+    if (this.canvas.clientWidth === 0 || this.canvas.clientHeight === 0) {
+      throw new Error('Canvas has zero dimensions, cannot initialize WebGL 2');
+    }
     this.gl = this.canvas.getContext('webgl2', { antialias: true, alpha: false });
     const gl = this.gl;
     if (!gl) throw new Error('No WebGL 2 context!');
@@ -699,26 +703,76 @@ const defaultItems = [
   }
 ];
 
+function checkWebGL2Support() {
+  try {
+    const testCanvas = document.createElement('canvas');
+    const gl = testCanvas.getContext('webgl2');
+    return !!gl;
+  } catch {
+    return false;
+  }
+}
+
 export default function InfiniteMenu({ items = [], scale = 1.0 }) {
   const canvasRef = useRef(null);
   const [activeItem, setActiveItem] = useState(null);
   const [isMoving, setIsMoving] = useState(false);
+  const [webgl2Supported] = useState(() => checkWebGL2Support());
+  const [initFailed, setInitFailed] = useState(false);
+
+  const displayItems = items.length ? items : defaultItems;
 
   useEffect(() => {
+    if (!webgl2Supported) return;
     const canvas = canvasRef.current;
     let sketch;
+    let retryCount = 0;
+    const MAX_RETRIES = 10;
+    let destroyed = false;
+
     const handleActiveItem = index => {
-      const itemIndex = index % items.length;
-      setActiveItem(items[itemIndex]);
+      if (destroyed) return;
+      const itemIndex = index % displayItems.length;
+      setActiveItem(displayItems[itemIndex]);
     };
-    if (canvas) {
-      sketch = new InfiniteGridMenu(canvas, items.length ? items : defaultItems, handleActiveItem, setIsMoving, sk => sk.run(), scale);
-    }
+
+    const initSketch = () => {
+      if (destroyed || !canvas) return;
+      if (canvas.clientWidth === 0 || canvas.clientHeight === 0) {
+        if (retryCount < MAX_RETRIES) {
+          retryCount++;
+          requestAnimationFrame(initSketch);
+        } else {
+          console.warn('InfiniteMenu: Canvas has zero dimensions after max retries, using fallback UI');
+          setInitFailed(true);
+        }
+        return;
+      }
+      try {
+        sketch = new InfiniteGridMenu(
+          canvas,
+          displayItems,
+          handleActiveItem,
+          setIsMoving,
+          sk => { if (!destroyed) sk.run(); },
+          scale
+        );
+      } catch (err) {
+        console.warn('InfiniteMenu initialization failed, using fallback UI:', err.message);
+        setInitFailed(true);
+      }
+    };
+
+    initSketch();
+
     const handleResize = () => { if (sketch) sketch.resize(); };
     window.addEventListener('resize', handleResize);
     handleResize();
-    return () => { window.removeEventListener('resize', handleResize); };
-  }, [items, scale]);
+    return () => {
+      destroyed = true;
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [displayItems, scale, webgl2Supported]);
 
   const handleButtonClick = () => {
     if (!activeItem?.link) return;
@@ -729,10 +783,53 @@ export default function InfiniteMenu({ items = [], scale = 1.0 }) {
     }
   };
 
+  const handleFallbackItemClick = item => {
+    setActiveItem(item);
+  };
+
+  const handleFallbackItemDoubleClick = item => {
+    if (!item?.link) return;
+    if (item.link.startsWith('http')) {
+      window.open(item.link, '_blank');
+    } else {
+      console.log('Internal route:', item.link);
+    }
+  };
+
+  const useFallback = !webgl2Supported || initFailed;
+
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <canvas id="infinite-grid-menu-canvas" ref={canvasRef} />
-      {activeItem && (
+      {!useFallback && <canvas id="infinite-grid-menu-canvas" ref={canvasRef} />}
+      {useFallback && (
+        <div className="infinite-menu-fallback">
+          <div className="infinite-menu-fallback-warning">
+            {!webgl2Supported
+              ? '当前浏览器不支持 WebGL 2，已启用兼容模式。'
+              : '3D 菜单初始化失败，已启用兼容模式。'}
+          </div>
+          <div className="infinite-menu-fallback-grid">
+            {displayItems.map((item, idx) => (
+              <div
+                key={idx}
+                className={`infinite-menu-fallback-item ${activeItem === item ? 'active' : ''}`}
+                onClick={() => handleFallbackItemClick(item)}
+                onDoubleClick={() => handleFallbackItemDoubleClick(item)}
+                title={item.description || item.title}
+              >
+                <img src={item.image} alt={item.title || `item-${idx}`} loading="lazy" />
+                {(item.title || item.description) && (
+                  <div className="infinite-menu-fallback-item-overlay">
+                    {item.title && <h3>{item.title}</h3>}
+                    {item.description && <p>{item.description}</p>}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {activeItem && !useFallback && (
         <>
           <h2 className={`face-title ${isMoving ? 'inactive' : 'active'}`}>{activeItem.title}</h2>
           <p className={`face-description ${isMoving ? 'inactive' : 'active'}`}> {activeItem.description}</p>

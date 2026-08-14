@@ -96,12 +96,16 @@ function MusicPlayerCard() {
       <audio
         ref={audioRef}
         src={currentSong.src}
+        preload="metadata"
         data-lyrics-index={currentSong.lyricsIndex}
         onTimeUpdate={updateProgress}
         onLoadedMetadata={handleLoaded}
         onEnded={handleEnded}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
+        onError={(e) => {
+          console.warn('[MusicPlayer] 音频加载失败:', currentSong.src, e)
+        }}
         // 歌曲切换时自动播放
         onCanPlay={() => {
           const audio = audioRef.current
