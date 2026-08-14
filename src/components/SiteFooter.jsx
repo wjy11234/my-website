@@ -7,7 +7,10 @@ import styles from './SiteFooter.module.css'
 const START_TIMESTAMP = new Date('2026-08-04T00:00:00+08:00').getTime()
 
 // ICP 备案号
-const ICP_TEXT = '辽ICP备2026018239号-1'
+const ICP_TEXT = '辽ICP备2026018239号'
+// 萌 ICP 备案号
+const MOE_ICP_TEXT = '萌ICP备20262610号'
+const MOE_ICP_URL = 'https://icp.gov.moe/?keyword=20262610'
 
 // 技术栈标签（根据项目实际技术栈）
 const TECH_TAGS = [
@@ -77,15 +80,25 @@ function SiteFooter() {
           ))}
         </div>
 
-        {/* 4. ICP备案 */}
-        <a
-          className={styles.icp}
-          href="https://beian.miit.gov.cn"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {ICP_TEXT}
-        </a>
+        {/* 4. ICP备案（两个备案号包成一组，间距小、上下排列） */}
+        <div className={styles.icpWrap}>
+          <a
+            className={styles.icp}
+            href="https://beian.miit.gov.cn"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {ICP_TEXT}
+          </a>
+          <a
+            className={styles.icp}
+            href={MOE_ICP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {MOE_ICP_TEXT}
+          </a>
+        </div>
       </div>
     </footer>
   )
