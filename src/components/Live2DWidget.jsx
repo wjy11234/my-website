@@ -33,7 +33,7 @@ function Live2DWidget() {
       TEXURE_CHANGE_MODE: 'random',
       IS_START_TEXURE_CHANGE: false,
       TEXURE_BUTTON_ID: '',
-      MODELS: [['live2d/model/xiaomai/xiaomai.model.json']],
+      MODELS: [['/live2d/model/xiaomai/xiaomai.model.json']],
       MOTION_GROUP_IDLE: 'idle',
       MOTION_GROUP_TAP_BODY: 'tap_body',
       MOTION_GROUP_FLICK_HEAD: 'flick_head',

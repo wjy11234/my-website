@@ -7,7 +7,7 @@ import styles from './SiteFooter.module.css'
 const START_TIMESTAMP = new Date('2026-08-04T00:00:00+08:00').getTime()
 
 // ICP 备案号
-const ICP_TEXT = '备案号正在申请中...'
+const ICP_TEXT = '辽ICP备2026018239号-1'
 
 // 技术栈标签（根据项目实际技术栈）
 const TECH_TAGS = [
@@ -78,7 +78,14 @@ function SiteFooter() {
         </div>
 
         {/* 4. ICP备案 */}
-        <span className={styles.icp}>{ICP_TEXT}</span>
+        <a
+          className={styles.icp}
+          href="https://beian.miit.gov.cn"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {ICP_TEXT}
+        </a>
       </div>
     </footer>
   )
