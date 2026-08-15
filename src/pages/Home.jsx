@@ -3,7 +3,9 @@ import NavHeader from '../components/NavHeader'
 import ProfileCard from '../components/ProfileCard'
 import MusicPlayerCard from '../components/MusicPlayerCard'
 import BannerBar from '../components/BannerBar'
-import ArticleCard from '../components/ArticleCard'
+import SiteStatsCard from '../components/SiteStatsCard'
+import VisitStatsCard from '../components/VisitStatsCard'
+import DailyQuoteCard from '../components/DailyQuoteCard'
 import AnnouncementCard from '../components/AnnouncementCard'
 import WeatherCard from '../components/WeatherCard'
 import ThemeToggle from '../components/ThemeToggle'
@@ -11,7 +13,6 @@ import FloatingButtons from '../components/FloatingButtons'
 import SiteFooter from '../components/SiteFooter'
 import SpiderPet from '../components/SpiderPet'
 import Live2DWidget from '../components/Live2DWidget'
-import { articles } from '../data/articles'
 import styles from './Home.module.css'
 
 function Home() {
@@ -46,9 +47,9 @@ function Home() {
 
         {/* 文章卡片网格 */}
         <div className={styles.articleGrid}>
-          {articles.map((article, i) => (
-            <ArticleCard key={i} article={article} />
-          ))}
+          <SiteStatsCard />
+          <VisitStatsCard />
+          <DailyQuoteCard />
         </div>
 
         {/* 公告 + 天气卡片 */}
