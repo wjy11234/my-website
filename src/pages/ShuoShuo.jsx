@@ -11,6 +11,8 @@ const TAG_COLORS = {
   '学习': '#34d399',
 }
 
+const TILTS = [-1.6, 1.4, -0.9, 1.6, -1.2]
+
 function ShuoshuoCard({ item, index }) {
   const cardRef = useRef(null)
 
@@ -36,6 +38,8 @@ function ShuoshuoCard({ item, index }) {
     return () => observer.disconnect()
   }, [index])
 
+  const tilt = TILTS[index % TILTS.length]
+
   return (
     <div ref={cardRef} className={styles.timelineItem}>
       {/* 日期标签 */}
@@ -51,7 +55,7 @@ function ShuoshuoCard({ item, index }) {
       </div>
 
       {/* 内容卡片 */}
-      <div className={styles.card}>
+      <div className={styles.card} style={{ '--tilt': `${tilt}deg` }}>
         <div className={styles.cardGlow} />
         <p className={styles.cardContent}>{item.content}</p>
         <div className={styles.cardFooter}>

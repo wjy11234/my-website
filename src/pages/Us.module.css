@@ -104,3 +104,424 @@
     transform: translateY(0);
   }
 }
+
+/* ===== 侧面纵向开关 ===== */
+.sideSwitch {
+  position: fixed;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  width: 48px;
+  height: 96px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.sideSwitchTrack {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  background: rgba(200, 210, 200, 0.5);
+  border: 1.5px solid rgba(180, 190, 180, 0.5);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.12);
+  position: relative;
+  transition: background 0.3s;
+}
+
+.sideSwitch:hover .sideSwitchTrack {
+  background: rgba(232, 135, 154, 0.25);
+}
+
+.sideSwitchThumb {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  transition: top 0.3s ease;
+}
+
+.sideSwitchThumb.on {
+  top: 4px;
+}
+
+.sideSwitchThumb.off {
+  top: 48px;
+}
+
+/* ===== 时光河流页面 ===== */
+.blankPage {
+  position: relative;
+  min-height: calc(100vh - 80px);
+  padding-top: 32px;
+  padding-bottom: 40px;
+  background:
+    radial-gradient(1200px 600px at 20% 0%, rgba(135, 196, 255, 0.22), transparent 60%),
+    radial-gradient(900px 500px at 80% 20%, rgba(232, 135, 154, 0.18), transparent 60%),
+    radial-gradient(900px 600px at 60% 100%, rgba(170, 225, 180, 0.22), transparent 60%),
+    linear-gradient(135deg, #eef7ff 0%, #f7eff8 50%, #eefbf1 100%);
+}
+
+/* ===== 归档头部 ===== */
+.timelineHeader {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 32px 20px;
+}
+
+.timelineIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: rgba(135, 196, 255, 0.18);
+  border: 1.5px solid rgba(135, 196, 255, 0.4);
+  color: #4da3ff;
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.timelineHeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.timelineTitle {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #2c3a55;
+}
+
+.timelineSubtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #7c8aa6;
+}
+
+/* ===== 滚动容器 ===== */
+.timelineScroll {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 20px 32px 40px;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.timelineScroll::-webkit-scrollbar {
+  display: none;
+}
+
+.timelineScroll.dragging {
+  cursor: grabbing;
+}
+
+/* ===== 轨道 ===== */
+.timelineTrack {
+  position: relative;
+}
+
+.timelineRiverSvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ===== 列 ===== */
+.timelineCol {
+  position: absolute;
+  bottom: 0;
+  z-index: 2;
+}
+
+/* ===== 节点圆点 ===== */
+.timelineDot {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2.5px solid #7AB8FF;
+  box-shadow:
+    0 0 0 5px rgba(122, 184, 255, 0.2),
+    0 2px 10px rgba(77, 163, 255, 0.3);
+  z-index: 5;
+}
+
+.timelineDotCore {
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7AA7FF, #87C4FF);
+}
+
+/* ===== 日期标签 ===== */
+.timelineDateLabel {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 12px;
+  color: #4a5a74;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 4px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(180, 200, 220, 0.5);
+  box-shadow: 0 2px 8px rgba(100, 130, 180, 0.12);
+  z-index: 4;
+}
+
+/* ===== 引线 ===== */
+.timelineDash {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 60px;
+  background: repeating-linear-gradient(
+    to top,
+    rgba(122, 184, 255, 0.5) 0px,
+    rgba(122, 184, 255, 0.5) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  z-index: 3;
+}
+
+/* ===== 卡片 ===== */
+.timelineCard {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(200, 210, 230, 0.55);
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow:
+    0 12px 32px rgba(60, 80, 120, 0.14),
+    0 4px 12px rgba(60, 80, 120, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 4;
+}
+
+.timelineCard:hover {
+  transform: translateX(-50%) translateY(-4px);
+  box-shadow:
+    0 20px 48px rgba(60, 80, 120, 0.2),
+    0 6px 18px rgba(60, 80, 120, 0.08);
+}
+
+/* ===== 卡片封面 ===== */
+.timelineCardCoverWrap {
+  position: relative;
+  width: 100%;
+  height: 170px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.timelineCardCover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  transition: transform 0.5s ease;
+}
+
+.timelineCard:hover .timelineCardCover {
+  transform: scale(1.05);
+}
+
+.timelineCardDate {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  padding: 2px 7px;
+  border-radius: 8px;
+}
+
+/* ===== 卡片内容 ===== */
+.timelineCardBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px 10px;
+  overflow: hidden;
+}
+
+.timelineCardTitle {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #2d3a55;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.timelineCardMeta {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.timelineCardTag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  color: #4da3ff;
+  background: rgba(135, 196, 255, 0.14);
+  border: 1px solid rgba(135, 196, 255, 0.28);
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.timelineCardStats {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: #7c8aa6;
+}
+
+.timelineCardStats span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* ===== 图片放大预览 ===== */
+.lightboxOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 20, 35, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: lightboxFadeIn 0.2s ease;
+}
+
+.lightboxContent {
+  position: relative;
+  max-width: min(90vw, 900px);
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lightboxImg {
+  max-width: 100%;
+  max-height: 78vh;
+  border-radius: 14px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+  object-fit: contain;
+  animation: lightboxZoomIn 0.25s ease;
+}
+
+.lightboxCaption {
+  margin-top: 14px;
+  text-align: center;
+  color: #fff;
+}
+
+.lightboxCaption h3 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.lightboxCaption span {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.lightboxClose {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.lightboxClose:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes lightboxFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes lightboxZoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

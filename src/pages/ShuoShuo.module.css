@@ -163,13 +163,14 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   overflow: hidden;
+  transform: rotate(var(--tilt, 0deg));
   transition: all 0.3s;
 }
 
 .card:hover {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(139, 92, 246, 0.2);
-  transform: translateX(4px);
+  transform: rotate(0deg) translateY(-4px);
 }
 
 /* 卡片光晕 */
