@@ -1,169 +1,29 @@
-import { useState, useMemo, useRef } from 'react'
-import { Calendar, Eye, Heart } from 'lucide-react'
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
+import { Calendar, Eye, Heart, LogOut } from 'lucide-react'
 import NavHeader from '../components/NavHeader'
 import DriftWall from '../components/DriftWall'
+import { supabase } from '../lib/supabase'
 import styles from './Us.module.css'
-
-const items = [
-  {
-    image: 'https://picsum.photos/id/1015/600/400',
-    title: 'Mountain Lake',
-    href: 'https://google.com/'
-  },
-  {
-    image: 'https://picsum.photos/id/1025/600/400',
-    title: 'Autumn Trail',
-    href: 'https://google.com/'
-  },
-  {
-    image: 'https://picsum.photos/id/1039/600/400',
-    title: 'Desert Dunes',
-    href: 'https://google.com/'
-  },
-  {
-    image: 'https://picsum.photos/id/1043/600/400',
-    title: 'Forest Path',
-    href: 'https://google.com/'
-  },
-  {
-    image: 'https://picsum.photos/id/1044/600/400',
-    title: 'Misty Valley',
-    href: 'https://google.com/'
-  },
-  {
-    image: 'https://picsum.photos/id/1050/600/400',
-    title: 'City Lights',
-    href: 'https://google.com/'
-  },
-  {
-    image: 'https://picsum.photos/id/1062/600/400',
-    title: 'Ocean View',
-    href: 'https://google.com/'
-  },
-  {
-    image: 'https://picsum.photos/id/1069/600/400',
-    title: 'Canyon River',
-    href: 'https://google.com/'
-  },
-  {
-    image: 'https://picsum.photos/id/1074/600/400',
-    title: 'Snow Peak',
-    href: 'https://google.com/'
-  },
-  {
-    image: 'https://picsum.photos/id/1080/600/400',
-    title: 'Green Hills',
-    href: 'https://google.com/'
-  },
-  {
-    image: 'https://picsum.photos/id/1084/600/400',
-    title: 'Waterfall',
-    href: 'https://google.com/'
-  },
-  {
-    image: 'https://picsum.photos/id/106/600/400',
-    title: 'Flower Field',
-    href: 'https://google.com/'
-  },
-  {
-    image: 'https://picsum.photos/id/110/600/400',
-    title: 'Lavender',
-    href: 'https://google.com/'
-  },
-  {
-    image: 'https://picsum.photos/id/133/600/400',
-    title: 'Coastline',
-    href: 'https://google.com/'
-  },
-  {
-    image: 'https://picsum.photos/id/164/600/400',
-    title: 'Sunset Bay',
-    href: 'https://google.com/'
-  }
-]
 
 const timelinePosts = [
   {
-    date: '2026.6.6 21:13',
-    cover: 'https://picsum.photos/id/1015/800/500',
-    title: '记一次让人崩溃的部署踩坑：Nginx 缓存引发的血案',
-    excerpt: '记一次让人崩溃的部署踩坑',
-    category: '技术',
-    views: 708,
+    date: '2026.8.18 00:00',
+    cover: 'https://hdcrcbglrytgnfutytag.supabase.co/storage/v1/object/public/uswall/IMG_5973.JPG',
+    title: '张悦琪，我喜欢你',
+    excerpt: '',
+    category: '爱你',
+    views: 1,
     likes: 1
   },
   {
-    date: '2026.6.2 17:22',
-    cover: 'https://picsum.photos/id/1025/800/500',
-    title: '博客重构笔记：用 Next.js + FastAPI 和 Vue 3 搭一个后分',
-    excerpt: '用 Next.js + FastAPI 和 Vue 3 搭建一个后分...',
-    category: '闲聊',
-    views: 340,
-    likes: 4
-  },
-  {
-    date: '2026.5.4 19:35',
-    cover: 'https://picsum.photos/id/1039/800/500',
-    title: '大家好！',
+    date: '2026.8.18 00:01',
+    cover: 'https://hdcrcbglrytgnfutytag.supabase.co/storage/v1/object/public/uswall/aa7a4ef7caf7e64ffd2a0d967c800546.jpg',
+    title: '这个页面没咋做好，太着急送给你嘻嘻',
     excerpt: '',
-    category: '闲聊',
-    views: 792,
-    likes: 2
-  },
-  {
-    date: '2026.5.3 21:27',
-    cover: 'https://picsum.photos/id/1043/800/500',
-    title: '能看到吗',
-    excerpt: '',
-    category: '闲聊',
-    views: 232,
+    category: '爱你',
+    views: 1,
     likes: 1
   },
-  {
-    date: '2026.5.3 21:26',
-    cover: 'https://picsum.photos/id/1044/800/500',
-    title: '测试测试',
-    excerpt: '',
-    category: '闲聊',
-    views: 164,
-    likes: 1
-  },
-  {
-    date: '2026.6.20 20:39',
-    cover: 'https://picsum.photos/id/1050/800/500',
-    title: '【Kova笔记】轻量，美观，AI辅助管理你的笔记',
-    excerpt: '核心功能：极简轻量 — 安装包5MB左右，启动快、内存低，专注记录本身。',
-    category: '技术',
-    views: 837,
-    likes: 3
-  },
-  {
-    date: '2026.5.26 13:32',
-    cover: 'https://picsum.photos/id/1062/800/500',
-    title: '震惊，AI 直接把我整个项目画成了知识图谱',
-    excerpt: '一个 Claude Code 插件，扫描你的代码库，自动生成交互式知识图谱仪表盘。',
-    category: '技术',
-    views: 840,
-    likes: 0
-  },
-  {
-    date: '2026.5.20 17:04',
-    cover: 'https://picsum.photos/id/1069/800/500',
-    title: 'Next.js App Router 组件边界：什么时候用服务端组件',
-    excerpt: '一个真实的 Next.js 项目里哪些组件应该跑在服务端、哪些应该跑在浏览器端？',
-    category: '技术',
-    views: 673,
-    likes: 3
-  },
-  {
-    date: '2026.5.18 18:46',
-    cover: 'https://picsum.photos/id/1074/800/500',
-    title: 'Nginx 反代实战：一个博客为例的部署',
-    excerpt: '配置、WebSocket 支持、静态资源缓存策略……',
-    category: '技术',
-    views: 412,
-    likes: 2
-  }
 ]
 
 const COL_WIDTH = 240
@@ -436,42 +296,147 @@ function CardContent({ post }) {
   )
 }
 
-const AUTH_ACCOUNT = import.meta.env.VITE_AUTH_ACCOUNT || 'wujj'
-const AUTH_PASSWORD = import.meta.env.VITE_AUTH_PASSWORD || '09876'
+const SAKURA_COLORS = ['#ffb7c5', '#ffc4d6', '#ffd0dc', '#ffcbd8', '#ffd9e3']
+
+function Sakura() {
+  const petals = useMemo(() => {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+    const count = isMobile ? 12 : 20
+    return Array.from({ length: count }, (_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      delay: -Math.random() * 20,
+      duration: 15 + Math.random() * 12,
+      size: 8 + Math.random() * 10,
+      color: SAKURA_COLORS[Math.floor(Math.random() * SAKURA_COLORS.length)],
+    }))
+  }, [])
+
+  return (
+    <div className={styles.sakuraContainer} aria-hidden="true">
+      {petals.map((p) => (
+        <span
+          key={p.id}
+          className={styles.sakuraPetal}
+          style={{
+            left: `${p.left}%`,
+            width: `${p.size}px`,
+            height: `${p.size}px`,
+            background: p.color,
+            animationDelay: `${p.delay}s`,
+            animationDuration: `${p.duration}s`,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
 
 function Us() {
-  const [authed, setAuthed] = useState(() => sessionStorage.getItem('us_authed') === '1')
-  const [account, setAccount] = useState('')
+  const [session, setSession] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [showWall, setShowWall] = useState(true)
 
-  const handleLogin = (e) => {
-    e.preventDefault()
-    if (account === AUTH_ACCOUNT && password === AUTH_PASSWORD) {
-      sessionStorage.setItem('us_authed', '1')
-      setAuthed(true)
-      setError('')
-    } else {
-      setError('账号或密码错误')
+  const [wallItems, setWallItems] = useState([])
+  const [wallLoading, setWallLoading] = useState(true)
+  const [lightbox, setLightbox] = useState(null)
+  const hasSupabase = Boolean(import.meta.env.VITE_SUPABASE_URL)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+      setAuthLoading(false)
+    })
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const fetchWallPhotos = useCallback(async () => {
+    if (!hasSupabase) {
+      setWallItems([])
+      setWallLoading(false)
+      return
     }
+    try {
+      const { data, error } = await supabase.storage
+        .from('uswall')
+        .list('', { sortBy: { column: 'created_at', order: 'desc' } })
+
+      if (error) throw error
+
+      const files = (data || []).filter(
+        (f) => f.name && (f.metadata?.mimetype === 'image/jpeg' || f.metadata?.mimetype === 'image/png')
+      )
+      const items = files.map((f) => {
+        const { data: urlData } = supabase.storage.from('uswall').getPublicUrl(encodeURIComponent(f.name))
+        return { image: urlData.publicUrl, title: '' }
+      })
+      for (let i = items.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[items[i], items[j]] = [items[j], items[i]]
+      }
+      setWallItems(items)
+    } catch (err) {
+      console.error('加载照片失败:', err)
+      setWallItems([])
+    } finally {
+      setWallLoading(false)
+    }
+  }, [hasSupabase])
+
+  useEffect(() => {
+    if (session) fetchWallPhotos()
+  }, [fetchWallPhotos, session])
+
+  useEffect(() => {
+    if (!lightbox) return
+    const onKey = (e) => {
+      if (e.key === 'Escape') setLightbox(null)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [lightbox])
+
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    setError('')
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) setError('邮箱或密码错误')
   }
 
-  if (!authed) {
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+  }
+
+  if (authLoading) {
     return (
       <div className={styles.page}>
         <NavHeader />
+      </div>
+    )
+  }
+
+  if (!session) {
+    return (
+      <div className={styles.page}>
+        <NavHeader />
+        <Sakura />
         <div className={styles.loginOverlay}>
           <form className={styles.loginCard} onSubmit={handleLogin}>
             <h2 className={styles.loginTitle}>欢迎回来</h2>
-            <p className={styles.loginSubtitle}>输入账号密码访问「我们」</p>
+            <p className={styles.loginSubtitle}>输入邮箱密码访问「我们」</p>
             <input
               className={styles.loginInput}
-              type="text"
-              placeholder="账号"
-              value={account}
-              autoComplete="username"
-              onChange={(e) => setAccount(e.target.value)}
+              type="email"
+              placeholder="邮箱"
+              value={email}
+              autoComplete="email"
+              onChange={(e) => setEmail(e.target.value)}
             />
             <input
               className={styles.loginInput}
@@ -492,6 +457,16 @@ function Us() {
   return (
     <div className={styles.page}>
       <NavHeader />
+      <Sakura />
+
+      <button
+        className={styles.logoutBtn}
+        type="button"
+        onClick={handleLogout}
+      >
+        <LogOut size={14} />
+        <span>退出</span>
+      </button>
 
       <button
         className={styles.sideSwitch}
@@ -505,19 +480,52 @@ function Us() {
       </button>
 
       {showWall ? (
-        <div style={{ height: 'calc(100vh - 80px)', position: 'relative', marginTop: 20 }}>
-          <DriftWall
-            items={items}
-            columns={7}
-            speed={38}
-            direction="up"
-            dim={0.45}
-            fade={0.55}
-            overlayColor="#1a1a2e"
-          />
+        <div className={styles.wallWrap}>
+          {wallLoading ? (
+            <div className={styles.wallEmpty}>加载中...</div>
+          ) : wallItems.length === 0 ? (
+            <div className={styles.wallEmpty}>暂无照片</div>
+          ) : (
+            <DriftWall
+              items={wallItems}
+              columns={7}
+              speed={38}
+              direction="up"
+              dim={0.45}
+              fade={0.55}
+              overlayColor="#1a1a2e"
+              onItemClick={(item) => setLightbox(item.image)}
+            />
+          )}
         </div>
       ) : (
         <TimelineRiver />
+      )}
+
+      {lightbox && (
+        <div
+          className={styles.lightboxOverlay}
+          onClick={() => setLightbox(null)}
+        >
+          <div
+            className={styles.lightboxContent}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              className={styles.lightboxImg}
+              src={lightbox}
+              alt=""
+            />
+            <button
+              className={styles.lightboxClose}
+              type="button"
+              onClick={() => setLightbox(null)}
+              aria-label="关闭"
+            >
+              ×
+            </button>
+          </div>
+        </div>
       )}
     </div>
   )

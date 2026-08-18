@@ -41,7 +41,8 @@ const DriftWall = ({
   grayscale = false,
   overlayColor = '#060010',
   className = '',
-  style
+  style,
+  onItemClick
 }) => {
   console.log('[DriftWall] 组件渲染 | items数量:', items?.length, '| columns:', columns, '| speed:', speed, '| direction:', direction);
 
@@ -260,9 +261,10 @@ const DriftWall = ({
       'data-tile-id': id,
       'data-col': colIndex,
       onFocus: () => activate(id, colIndex),
-      onBlur: release
+      onBlur: release,
+      onClick: onItemClick ? () => onItemClick(item) : undefined
     };
-    if (item.href) {
+    if (item.href && !onItemClick) {
       return (
         <a key={id} href={item.href} target="_blank" rel="noreferrer noopener" {...commonProps}>
           {inner}
