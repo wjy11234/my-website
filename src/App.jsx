@@ -7,6 +7,7 @@ import PhotoWall from './pages/PhotoWall'
 import AlbumGallery from './pages/AlbumGallery'
 import Us from './pages/Us'
 import Tools from './pages/Tools'
+import FriendLinks from './pages/FriendLinks'
 import About from './pages/About'
 import MessageWall from './pages/MessageWall'
 
@@ -23,6 +24,7 @@ function App() {
             <Route path="/us" element={<Us />} />
             <Route path="/message-wall" element={<MessageWall />} />
             <Route path="/tools" element={<Tools />} />
+            <Route path="/friends" element={<FriendLinks />} />
             <Route path="/about" element={<About />} />
           </Route>
         </Routes>

@@ -3,11 +3,20 @@ import { FileText, Folder, Tag, AlignJustify, CalendarClock, Activity } from 'lu
 import SpotlightCard from './SpotlightCard'
 import styles from './SiteStatsCard.module.css'
 import { supabase } from '../lib/supabase'
-import { articles } from '../data/articles'
 import { songs } from '../data/songs'
 import { lyrics, lyricsBeggingYou } from '../data/lyrics'
 import { announcement } from '../data/announcement'
 import { shuoshuo } from '../data/shuoshuo'
+
+// ===== 可配置变量 =====
+// 运行天数起始日期（固定为实际上线日期）
+const START_DATE = '2026-08-05'
+// 最后活动日期（手动维护，改成最近一次更新网站的日期）
+const LAST_ACTIVE_DATE = '2026-08-30'
+// 文章 / 分类 / 标签数量（手动维护）
+const ARTICLE_COUNT = 3
+const CATEGORY_COUNT = 3
+const TAG_COUNT = 2
 
 function daysBetween(a, b) {
   const ms = new Date(b).getTime() - new Date(a).getTime()
@@ -29,9 +38,6 @@ function countChinese(str) {
 // 统计全站内容数据的中文总字数
 function calcTotalWords() {
   let total = 0
-
-  // 文章：标题 + 描述
-  articles.forEach((a) => { total += countChinese(a.title) + countChinese(a.desc) })
 
   // 歌曲：标题 + 歌手名
   songs.forEach((s) => { total += countChinese(s.title) + countChinese(s.artist) })
@@ -79,14 +85,12 @@ function SiteStatsCard() {
     return () => { alive = false }
   }, [])
 
-  const articleCount = articles.length
-  const categoryCount = new Set(articles.map((a) => a.tag)).size
-  const tagCount = categoryCount
+  const articleCount = ARTICLE_COUNT
+  const categoryCount = CATEGORY_COUNT
+  const tagCount = TAG_COUNT
   const totalWords = calcTotalWords() + wallWords
-  const earliestDate = articles.reduce((m, a) => (a.date < m ? a.date : m), articles[0]?.date || today())
-  const latestDate = articles.reduce((m, a) => (a.date > m ? a.date : m), articles[0]?.date || today())
-  const runningDays = daysBetween(earliestDate, today()) + 1
-  const lastActiveDays = daysBetween(latestDate, today())
+  const runningDays = daysBetween(START_DATE, today()) + 1
+  const lastActiveDays = daysBetween(LAST_ACTIVE_DATE, today())
 
   const items = [
     { icon: <FileText size={16} />, label: '文章', value: String(articleCount) },

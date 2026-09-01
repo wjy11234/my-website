@@ -1,54 +1,174 @@
+/* ===== 蜡笔小新主题 · 设计 token ===== */
+:root, .navInner {
+  --shin-red: #e84c3d;        /* 小新裤子红 */
+  --shin-yellow: #ffd23f;     /* 小新衬衫黄 */
+  --shin-deep-yellow: #f1b400;
+  --shin-blue: #3aa6f0;       /* 动感超人蓝 */
+  --shin-deep-blue: #1a6fb8;
+  --shin-pink: #ff9cc1;       /* 美冴粉 */
+  --shin-green: #7ac142;      /* 小白绿 */
+  --shin-ink: #2b2b2b;        /* 漫画墨色 */
+}
+
+/* 导航栏外层：只负责吸顶 */
 .navbar {
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: rgba(250, 248, 240, 0);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0;
+  background-color: transparent;
+  backdrop-filter: none;
+  border-bottom: none;
 }
 
+/* —— 小新软着陆：半透明白玻璃底 + 小新红软边 —— */
 .navInner {
+  position: relative;        /* 给装饰元素做定位容器 */
   max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 24px;
+  margin: 8px auto 0;
+  padding: 0 22px;
   height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  /* 半透明白玻璃底 —— 浅色页上不突兀、深色页上能透出 */
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.78) 0%,
+    rgba(255, 255, 255, 0.55) 100%
+  );
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 2px solid rgba(232, 76, 61, 0.1);  /* 小新红软边（低饱和半透） */
+  border-radius: 18px;
+  box-shadow:
+    0 6px 20px rgba(232, 76, 61, 0.18),       /* 小新红柔和散阴影 */
+    0 2px 6px rgba(255, 210, 63, 0.22),       /* 小新黄底层柔光 */
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),  /* 顶部玻璃高光 */
+    inset 0 -1px 0 rgba(0, 0, 0, 0.04);       /* 底部微暗 */
+  font-family: "ZCOOL KuaiLe", "PingFang SC", "Microsoft YaHei", sans-serif;
+  overflow: visible;
 }
 
+/* 蜡笔装饰 · 左上：红点点涂鸦（降透明度） */
+.navInner::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 32px;
+  width: 28px;
+  height: 10px;
+  background: radial-gradient(circle, var(--shin-red) 2.5px, transparent 3.5px) 0 0/7px 7px;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+/* 蜡笔装饰 · 右下：蓝色蜡笔小波浪（降透明度） */
+.navInner::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  right: 44px;
+  width: 44px;
+  height: 7px;
+  background: linear-gradient(
+    90deg,
+    transparent 0 3px,
+    var(--shin-blue) 3px 9px,
+    transparent 9px 12px,
+    var(--shin-blue) 12px 20px,
+    transparent 20px 23px,
+    var(--shin-blue) 23px 31px,
+    transparent 31px 44px
+  );
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+/* 左侧加一个小蜡笔装饰块（衬衫条纹） */
+.logo::before {
+  content: "📌";
+  margin-right: 6px;
+  font-size: 20px;
+}
+
+/* Logo：小新风红底白字，但阴影柔和 */
 .logo {
   font-size: 29px;
   font-weight: 700;
-  color: #a78bfa;
+  font-family: "ZCOOL KuaiLe", sans-serif;
+  color: #fff;
   text-decoration: none;
-  border: 0px solid #000000;
+  background: var(--shin-red);
+  padding: 4px 14px 4px 8px;
+  border-radius: 12px;
+  border: 2px solid rgba(0, 0, 0, 0.25);
+  box-shadow: 0 3px 10px rgba(232, 76, 61, 0.35), 0 1px 2px rgba(0, 0, 0, 0.08);
+  letter-spacing: 2px;
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 .logo:hover {
-  color: #8b5cf6;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(232, 76, 61, 0.45), 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .navLinks {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .navLinks a {
-  padding: 8px 16px;
+  padding: 7px 14px;
   text-decoration: none;
-  color: #94a3b8;
-  font-size: 15px;
-  border-radius: 6px;
-  transition: all 0.2s;
+  color: var(--shin-ink);
+  font-family: "ZCOOL KuaiLe", sans-serif;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  transition: all 0.18s;
+  position: relative;
 }
 
 .navLinks a:hover {
-  background: rgba(139, 92, 246, 0.1);
-  color: #a78bfa;
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(0, 0, 0, 0.18);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(232, 76, 61, 0.25);
 }
 
+/* 激活态：小新红底白字，柔和阴影 */
 .navLinks a.active {
-  background: rgba(139, 92, 246, 0.2);
-  color: #a78bfa;
+  background: var(--shin-red);
+  color: #fff;
+  border-color: rgba(0, 0, 0, 0.25);
+  box-shadow: 0 3px 10px rgba(232, 76, 61, 0.4);
+}
+
+/* 响应式：移动端简化 */
+@media (max-width: 640px) {
+  .navInner {
+    height: 56px;
+    border-radius: 14px;
+    padding: 0 14px;
+    margin: 8px 10px 0;
+    max-width: none;
+    border-width: 1.5px;
+  }
+  .navLinks a {
+    padding: 5px 9px;
+    font-size: 14px;
+  }
+  .logo {
+    font-size: 22px;
+    padding: 3px 10px 3px 6px;
+  }
+  .logo::before {
+    font-size: 16px;
+    margin-right: 4px;
+  }
+  /* 移动端隐藏装饰涂鸦，避免拥挤 */
+  .navInner::before,
+  .navInner::after {
+    display: none;
+  }
 }

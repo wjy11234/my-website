@@ -7,12 +7,15 @@ import styles from './SiteFooter.module.css'
 const START_TIMESTAMP = new Date('2026-08-04T00:00:00+08:00').getTime()
 
 // ICP 备案号
-const ICP_TEXT = '辽ICP备2026018239号'
+const ICP_TEXT = '辽ICP备2026018239号-1'
 // 萌 ICP 备案号
 const MOE_ICP_TEXT = '萌ICP备20262610号'
 const MOE_ICP_URL = 'https://icp.gov.moe/?keyword=20262610'
+// 公安备案号
+const GONGAN_ICP_TEXT = '辽公网安备21088102000148号'
+const GONGAN_ICP_URL = 'https://beian.mps.gov.cn/#/query/webSearch?code=21088102000148'
 
-// 技术栈标签（根据项目实际技术栈）
+// 技术栈标签
 const TECH_TAGS = [
   { name: 'Vite 8', Icon: Zap },
   { name: 'React 19', Icon: Atom },
@@ -70,34 +73,46 @@ function SiteFooter() {
           <span className={styles.uptimeText}>系统已稳定运行: {uptime}</span>
         </div>
 
-        {/* 3. 技术栈标签 */}
-        <div className={styles.tags}>
-          {TECH_TAGS.map((t) => (
-            <span key={t.name} className={styles.tag}>
-              <t.Icon size={14} className={styles.tagIcon} />
-              {t.name}
-            </span>
-          ))}
-        </div>
+        {/* 3. 技术栈 + 备案号 横向并排 */}
+        <div className={styles.tagsAndIcp}>
+          <div className={styles.tags}>
+            {TECH_TAGS.map((t) => (
+              <span key={t.name} className={styles.tag}>
+                <t.Icon size={14} className={styles.tagIcon} />
+                {t.name}
+              </span>
+            ))}
+          </div>
 
-        {/* 4. ICP备案（两个备案号包成一组，间距小、上下排列） */}
-        <div className={styles.icpWrap}>
-          <a
-            className={styles.icp}
-            href="https://beian.miit.gov.cn"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {ICP_TEXT}
-          </a>
-          <a
-            className={styles.icp}
-            href={MOE_ICP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {MOE_ICP_TEXT}
-          </a>
+          <div className={styles.icpWrap}>
+            <a
+              className={styles.icp}
+              href="https://beian.miit.gov.cn"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/16.23.47.png" alt="" className={styles.icpIcon} />
+              {ICP_TEXT}
+            </a>
+            <a
+              className={styles.icp}
+              href={GONGAN_ICP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/logo01.6189a29f.png" alt="" className={styles.icpIcon} />
+              {GONGAN_ICP_TEXT}
+            </a>
+            <a
+              className={styles.icp}
+              href={MOE_ICP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/icon180.png" alt="" className={styles.icpIcon} />
+              {MOE_ICP_TEXT}
+            </a>
+          </div>
         </div>
       </div>
     </footer>

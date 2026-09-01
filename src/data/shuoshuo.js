@@ -63,5 +63,18 @@ export const shuoshuo = [
     content: '天长地久有时尽，此恨绵绵无绝期',
     tag: '日常',
   },
-
+ {
+    id: 10,
+    date: '2026-08-30',
+    time: '22:10',
+    content: '批评你Z',
+    tag: '日常',
+  },
+  {
+    id: 11,
+    date: '2026-08-31',
+    time: '23:10',
+    content: '你绝对晕碳了',
+    tag: '日常',
+  },
 ]

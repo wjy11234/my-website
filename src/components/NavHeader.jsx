@@ -13,6 +13,7 @@ function NavHeader() {
           <NavLink to="/us">我们</NavLink>
           <NavLink to="/message-wall">留言板</NavLink>
           <NavLink to="/tools">工具</NavLink>
+          <NavLink to="/friends">友链</NavLink>
           <NavLink to="/about">关于</NavLink>
         </nav>
       </div>

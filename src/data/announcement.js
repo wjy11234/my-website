@@ -5,6 +5,6 @@ export const announcement = {
   items: [
     '更新了留言板评论功能',
     '照片墙可上传图片',
-    '周六进行网站更换，请访问www.jywu.asia',
+    '网页参考了许多站长的网站，感谢他们的分享！',
   ],
 }

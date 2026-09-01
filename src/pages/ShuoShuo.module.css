@@ -1,16 +1,49 @@
 /* ===== 页面容器 ===== */
+/* 用外层包装 + 伪元素背景固定到视口四个角，彻底解决"顶部/底部露底、没铺满"问题 */
 .page {
+  position: relative;
   min-height: 100vh;
-  background: 
-    linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.85) 100%),
-    url('/wallhaven1.webp') center/cover no-repeat fixed;
   padding: 0;
+  /* 让背景色在图片未加载/加载失败时也铺满（避免白边） */
+  background-color: #0b0b10;
+  isolation: isolate;
+}
+
+/* 背景图固定层（盖住整屏 + 贴到 0,0，不会被 NavHeader 的 margin 顶穿） */
+.page::before {
+  content: "";
+  position: fixed;
+  inset: 0;                       /* 四个角全部贴到视口 —— 彻底铺满 */
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.88) 100%),
+    url('/20201215210531_d3c49.jpg') no-repeat center center;
+  background-size: cover;          /* 等比铺满，不留白 */
+  -webkit-background-size: cover;
+  background-attachment: fixed;    /* 滚动时背景不动（视差感） */
+  -webkit-background-size: cover;
+  /* 兜底：移动端 iOS Safari 不支持 cover + fixed 组合，退化为 scroll */
+  min-height: 100vh;
+}
+
+.page::after {
+  /* 额外一层暗色边缘，避免 NavHeader 悬浮玻璃太亮的区域背景反差 */
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    120% 80% at 50% -10%,
+    rgba(124, 58, 237, 0.18),
+    transparent 60%
+  );
+  pointer-events: none;
 }
 
 .pageInner {
   max-width: 860px;
   margin: 0 auto;
-  padding: 48px 24px 80px;
+  padding: 32px 24px 80px;   /* 顶部减为 32px，因为 NavHeader 本身已经留 12px margin */
 }
 
 /* ===== 页面头部 ===== */
