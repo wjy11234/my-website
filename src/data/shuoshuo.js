@@ -77,4 +77,18 @@ export const shuoshuo = [
     content: '你绝对晕碳了',
     tag: '日常',
   },
+  {
+    id: 12,
+    date: '2026-09-1',
+    time: '8:10',
+    content: '开学好难受',
+    tag: '开学',
+  },
+  {
+    id: 13,
+    date: '2026-09-5',
+    time: '12:01',
+    content: '咋那么累呢',
+    tag: '日常',
+  },
 ]

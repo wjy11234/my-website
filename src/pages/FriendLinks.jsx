@@ -9,10 +9,10 @@ import styles from './FriendLinks.module.css'
 // 站点信息（左侧卡片 + 申请区）
 const SITE_NAME = 'Wuの小站'
 const SITE_SLOGAN = 'WU AND YOU'
-const SITE_AVATAR = '/zhu.jpg' // 左侧卡片头像图片链接，留空显示首字
+const SITE_AVATAR = '/favicon.ico' // 左侧卡片头像图片链接，留空显示首字
 const SITE_DESC = 'Wuのpersonal blog'
 const SITE_URL = 'https://www.jywu.asia'
-const SITE_AVATAR_URL = `${SITE_URL}/IMG_6566.webp`
+const SITE_AVATAR_URL = `${SITE_URL}/favicon.ico`
 const SITE_INTRO = 'Wuの个人小站，记录生活与技术'
 
 // 交换要求（注意事项）
@@ -60,6 +60,7 @@ const SHIN_QUOTES = [
   '「漂亮的大姐姐！要不要一起交换友链呀」',
   '「动感超人哇哈哈哈哈哈哈哈」',
   '「小白～棉花糖！」',
+  '「我喜欢ni」',
 ]
 const QUOTE = SHIN_QUOTES[Math.floor(Math.random() * SHIN_QUOTES.length)]
 
@@ -70,7 +71,7 @@ const STICKER_BURIKKO = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_imag
 
 // 评论提交按钮 + 快速申请 文案
 const BTN_SUBMIT = '动感超人发射！'
-const BTN_QUICK_APPLY = '🚀 小新，我要申请友链！'
+const BTN_QUICK_APPLY = '🚀 小新，我要申请友链！（点击这里哟）'
 
 function Avatar({ name, src, className }) {
   if (src) {
@@ -479,7 +480,7 @@ function FriendLinks() {
                     </ul>
                   </div>
                   <p className={styles.applyHint}>
-                    添加完毕后，可以在下方评论区发送申请
+                    欢迎大家哦，我很乐意结交新的好友。
                   </p>
                   <button className={styles.applyBtn} type="button" onClick={quickApply}>
                     {BTN_QUICK_APPLY}

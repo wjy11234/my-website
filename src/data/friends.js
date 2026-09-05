@@ -10,7 +10,24 @@ export const friends = [
     name: 'Wuの小站',
     desc: 'Wuの个人小站，记录生活',
     url: 'https://jywu.asia',
-    avatar: 'https://www.jywu.asia/IMG_6566.webp', // 头像图片链接，填到这里
+    avatar: 'https://www.jywu.asia/favicon.ico',
   },
-  
+  {
+    name: "YuJing的记忆终端",
+    desc: '一个人的碎碎',
+    url: 'https://yujingblog.top',
+    avatar: 'https://yujingblog.top/favicon/avatar-icon.png',
+  },
+  {
+    name: '夜白的小屋',
+    desc: '这个人很懒，什么都没留下',
+    url: 'https://yibi2333.fun/',
+    avatar: 'https://yibi2333.fun/favicon.ico',
+  },
+  {
+    name: "Eliauk's Blog",
+    desc: '一方天地，记录代码、生活和偶尔的奇思妙想。',
+    url: 'https://eliauk312.top/',
+    avatar: 'https://img.eliauk312.top/avatar/default-avatar.jpg',
+  },
 ]
