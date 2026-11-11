@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { Music } from 'lucide-react'
 import Spectrum from './Spectrum'
 import styles from './BannerBar.module.css'
-import { lyrics, lyricsBeggingYou } from '../data/lyrics'
+import { lyrics, lyricsBeggingYou, lyricsJingyinLianren } from '../data/lyrics'
 
 function BannerBar() {
   const [currentIndex, setCurrentIndex] = useState(-1)
@@ -16,7 +16,7 @@ function BannerBar() {
 
     const updateLyrics = () => {
       const idx = parseInt(audio.dataset.lyricsIndex || '0', 10)
-      const allLyrics = [lyrics, lyricsBeggingYou]
+      const allLyrics = [lyrics, lyricsBeggingYou, lyricsJingyinLianren]
       setCurrentLyrics(allLyrics[idx] || lyrics)
     }
 

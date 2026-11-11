@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { Plus, X, Trash2, MessageCircle, Send } from 'lucide-react'
+import { Plus, X, MessageCircle, Send } from 'lucide-react'
 import NavHeader from '../components/NavHeader'
 import { supabase } from '../lib/supabase'
 import styles from './MessageWall.module.css'
@@ -113,18 +113,6 @@ function MessageWall() {
     setShowInput(false)
   }
 
-  // 删除便签
-  const deleteNote = async (e, id) => {
-    e.stopPropagation()
-    if (hasSupabase) {
-      await supabase.from('messages').delete().eq('id', id)
-      await supabase.from('message_comments').delete().eq('message_id', id)
-    }
-    setNotes(prev => prev.filter(n => n.id !== id))
-    setComments(prev => { const next = { ...prev }; delete next[id]; return next })
-    if (clickedNote?.id === id) setClickedNote(null)
-  }
-
   // 键盘提交
   const onKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -225,16 +213,6 @@ function MessageWall() {
     }
   }
 
-  // 删除评论
-  const deleteComment = async (commentId) => {
-    if (hasSupabase) {
-      await supabase.from('message_comments').delete().eq('id', commentId)
-    }
-    setComments(prev => ({
-      ...prev,
-      [clickedNote.id]: (prev[clickedNote.id] || []).filter(c => c.id !== commentId),
-    }))
-  }
 
   const onCommentKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -292,13 +270,6 @@ function MessageWall() {
               >
                 <MessageCircle size={13} />
                 <span>{(comments[note.id] || []).length || ''}</span>
-              </button>
-              <button
-                className={styles.deleteBtn}
-                onClick={(e) => deleteNote(e, note.id)}
-                title="删除"
-              >
-                <Trash2 size={14} />
               </button>
             </div>
           </div>
@@ -380,13 +351,6 @@ function MessageWall() {
                       })}
                     </span>
                   </div>
-                  <button
-                    className={styles.commentDeleteBtn}
-                    onClick={() => deleteComment(c.id)}
-                    title="删除评论"
-                  >
-                    <Trash2 size={12} />
-                  </button>
                 </div>
               ))}
             </div>

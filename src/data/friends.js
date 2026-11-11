@@ -30,4 +30,10 @@ export const friends = [
     url: 'https://eliauk312.top/',
     avatar: 'https://img.eliauk312.top/avatar/default-avatar.jpg',
   },
+  {
+    name: "YuJing的记忆终端",
+    desc: '一个人的碎碎',
+    url: 'https://yujingblog.top',
+    avatar: 'https://yujingblog.top/favicon/avatar-icon.png',
+  },
 ]

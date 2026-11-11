@@ -187,10 +187,6 @@ const CursorGrid = ({
         anyVisible = true;
 
         const [cx, cy] = cellCenter(i);
-        const gradient = ctx.createRadialGradient(cx, cy, half * 0.1, cx, cy, p.cellSize);
-        gradient.addColorStop(0, `rgba(${cr}, ${cg}, ${cb}, ${a})`);
-        gradient.addColorStop(1, `rgba(${cr}, ${cg}, ${cb}, 0)`);
-
         const x = cx - half + 0.5;
         const y = cy - half + 0.5;
         const s = p.cellSize - 1;
@@ -205,7 +201,7 @@ const CursorGrid = ({
           ctx.fillStyle = `rgba(${cr}, ${cg}, ${cb}, ${a * p.fillOpacity})`;
           ctx.fill();
         }
-        ctx.strokeStyle = gradient;
+        ctx.strokeStyle = `rgba(${cr}, ${cg}, ${cb}, ${a})`;
         ctx.lineWidth = p.lineWidth;
         ctx.stroke();
       }

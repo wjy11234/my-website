@@ -25,3 +25,7 @@ dist-ssr
 
 # Env
 .env
+
+# Trae
+.trae-html-share-packages/
+.trae/

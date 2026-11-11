@@ -1,532 +1,253 @@
-import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
-import { Calendar, Eye, Heart, LogOut } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import NavHeader from '../components/NavHeader'
-import DriftWall from '../components/DriftWall'
+import { AlbumCoverTunnel } from '../components/leibox/album-cover-tunnel/AlbumCoverTunnel'
 import { supabase } from '../lib/supabase'
 import styles from './Us.module.css'
 
-const timelinePosts = [
-  {
-    date: '2026.8.18 00:00',
-    cover: 'https://hdcrcbglrytgnfutytag.supabase.co/storage/v1/object/public/uswall/IMG_5973.JPG',
-    title: '张悦琪，我喜欢你',
-    excerpt: '',
-    category: '爱你',
-    views: 1,
-    likes: 1
-  },
-  {
-    date: '2026.8.18 00:01',
-    cover: 'https://hdcrcbglrytgnfutytag.supabase.co/storage/v1/object/public/uswall/aa7a4ef7caf7e64ffd2a0d967c800546.jpg',
-    title: '这个页面没咋做好，太着急送给你嘻嘻',
-    excerpt: '',
-    category: '爱你',
-    views: 1,
-    likes: 1
-  },
-]
+const BUCKET = 'uswall'
+const LEN = 6 // 6 位验证码
 
-const COL_WIDTH = 240
-const TRACK_HEIGHT = 800
-const RIVER_CENTER_FROM_BOTTOM = 395
-const DASH_HEIGHT = 60
-const DASH_GAP = 12
-const CardHeight = 250
-
-function TimelineRiver() {
-  const sorted = useMemo(
-    () => [...timelinePosts].sort((a, b) => new Date(a.date) - new Date(b.date)),
-    []
-  )
-
-  const [lightbox, setLightbox] = useState(null)
-
-  const scrollRef = useRef(null)
-  const dragRef = useRef({ dragging: false, startX: 0, startLeft: 0 })
-  const movedRef = useRef(false)
-
-  const onMouseDown = (e) => {
-    const el = scrollRef.current
-    if (!el) return
-    e.preventDefault()
-    movedRef.current = false
-    dragRef.current = { dragging: true, startX: e.clientX, startLeft: el.scrollLeft }
-    el.classList.add(styles.dragging)
-  }
-
-  const onMouseMove = (e) => {
-    if (!dragRef.current.dragging) return
-    const el = scrollRef.current
-    if (!el) return
-    const dx = e.clientX - dragRef.current.startX
-    if (Math.abs(dx) > 4) movedRef.current = true
-    el.scrollLeft = dragRef.current.startLeft - dx
-  }
-
-  const endDrag = () => {
-    if (!dragRef.current.dragging) return
-    dragRef.current.dragging = false
-    scrollRef.current?.classList.remove(styles.dragging)
-  }
-
-  const openLightbox = (post) => {
-    if (movedRef.current) return
-    setLightbox(post)
-  }
-
-  const N = sorted.length
-  const totalWidth = N * COL_WIDTH + 80
-
-  const dotBottom = (i) => {
-    return RIVER_CENTER_FROM_BOTTOM + Math.sin((i / Math.max(1, N - 1)) * Math.PI * 3) * 70
-  }
-
-  const dotBottoms = useMemo(() => sorted.map((_, i) => dotBottom(i)), [N])
-
-  const svgPath = useMemo(() => {
-    if (N === 0) return ''
-    if (N === 1) return `M ${COL_WIDTH / 2} ${TRACK_HEIGHT - dotBottoms[0]}`
-    let d = ''
-    for (let i = 0; i < N; i++) {
-      const cx = i * COL_WIDTH + COL_WIDTH / 2
-      const cy = TRACK_HEIGHT - dotBottoms[i]
-      if (i === 0) {
-        d += `M ${cx} ${cy} `
-      } else {
-        const px = (i - 1) * COL_WIDTH + COL_WIDTH / 2
-        const py = TRACK_HEIGHT - dotBottoms[i - 1]
-        const mx = (px + cx) / 2
-        d += `C ${mx} ${py} ${mx} ${cy} ${cx} ${cy} `
-      }
-    }
-    return d
-  }, [N, dotBottoms])
-
-  return (
-    <div className={styles.blankPage}>
-      <div className={styles.timelineHeader}>
-        <div className={styles.timelineIcon}>◷</div>
-        <div className={styles.timelineHeaderText}>
-          <h2 className={styles.timelineTitle}>归档</h2>
-          <p className={styles.timelineSubtitle}>时光河流 · 共 {sorted.length} 篇文章</p>
-        </div>
-      </div>
-
-      <div
-        className={styles.timelineScroll}
-        ref={scrollRef}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={endDrag}
-        onMouseLeave={endDrag}
-      >
-        <div
-          className={styles.timelineTrack}
-          style={{ width: totalWidth, height: TRACK_HEIGHT }}
-        >
-          <svg
-            className={styles.timelineRiverSvg}
-            width={totalWidth}
-            height={TRACK_HEIGHT}
-            viewBox={`0 0 ${totalWidth} ${TRACK_HEIGHT}`}
-            preserveAspectRatio="none"
-          >
-            <defs>
-              <linearGradient id="river-line" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#87C4FF" stopOpacity="0.6" />
-                <stop offset="50%" stopColor="#7AA7FF" stopOpacity="1" />
-                <stop offset="100%" stopColor="#A4D6FF" stopOpacity="0.6" />
-              </linearGradient>
-              <filter id="river-glow" x="-5%" y="-50%" width="110%" height="200%">
-                <feGaussianBlur stdDeviation="5" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
-            <path
-              d={svgPath}
-              fill="none"
-              stroke="rgba(255,255,255,0.5)"
-              strokeWidth="12"
-              strokeLinecap="round"
-            />
-            <path
-              d={svgPath}
-              fill="none"
-              stroke="url(#river-line)"
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              filter="url(#river-glow)"
-            />
-          </svg>
-
-          {sorted.map((post, i) => {
-            const db = dotBottoms[i]
-            const side = i % 2 === 0 ? 'top' : 'bottom'
-            return (
-              <div
-                key={i}
-                className={styles.timelineCol}
-                style={{
-                  width: COL_WIDTH,
-                  left: i * COL_WIDTH,
-                  height: TRACK_HEIGHT
-                }}
-              >
-                {side === 'top' && (
-                  <div
-                    className={styles.timelineCard}
-                    style={{ bottom: db + DASH_HEIGHT + DASH_GAP }}
-                    onClick={() => openLightbox(post)}
-                  >
-                    <CardContent post={post} />
-                  </div>
-                )}
-
-                {side === 'top' && (
-                  <span
-                    className={styles.timelineDash}
-                    style={{ bottom: db }}
-                  />
-                )}
-
-                <div
-                  className={styles.timelineDot}
-                  style={{ bottom: db }}
-                >
-                  <span className={styles.timelineDotCore} />
-                </div>
-
-                <span
-                  className={styles.timelineDateLabel}
-                  style={{ bottom: db + 28 }}
-                >
-                  {post.date}
-                </span>
-
-                {side === 'bottom' && (
-                  <span
-                    className={styles.timelineDash}
-                    style={{ bottom: db - DASH_HEIGHT }}
-                  />
-                )}
-
-                {side === 'bottom' && (
-                  <div
-                    className={styles.timelineCard}
-                    style={{ bottom: db - DASH_HEIGHT - DASH_GAP - CardHeight }}
-                    onClick={() => openLightbox(post)}
-                  >
-                    <CardContent post={post} />
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      </div>
-
-      {lightbox && (
-        <div
-          className={styles.lightboxOverlay}
-          onClick={() => setLightbox(null)}
-        >
-          <div
-            className={styles.lightboxContent}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <img
-              className={styles.lightboxImg}
-              src={lightbox.cover.replace(/\/\d+\/\d+$/, '/1600/1000')}
-              alt={lightbox.title}
-            />
-            <div className={styles.lightboxCaption}>
-              <h3>{lightbox.title}</h3>
-              <span>{lightbox.date}</span>
-            </div>
-            <button
-              className={styles.lightboxClose}
-              type="button"
-              onClick={() => setLightbox(null)}
-              aria-label="关闭"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  )
+// 存储桶返回的文件可能缺少 mimetype，这里用扩展名兜底
+function isImageFile(file) {
+  const mime = file?.metadata?.mimetype || ''
+  if (mime) return mime.startsWith('image/')
+  return /\.(jpe?g|png|webp|gif|avif)$/i.test(file?.name || '')
 }
 
-function CardContent({ post }) {
-  return (
-    <>
-      <div className={styles.timelineCardCoverWrap}>
-        <img
-          className={styles.timelineCardCover}
-          src={post.cover}
-          alt={post.title}
-          draggable={false}
-        />
-        <div className={styles.timelineCardDate}>
-          <Calendar size={11} />
-          {post.date}
-        </div>
-      </div>
-      <div className={styles.timelineCardBody}>
-        <h3 className={styles.timelineCardTitle}>{post.title}</h3>
-        <div className={styles.timelineCardMeta}>
-          <span className={styles.timelineCardTag}>{post.category}</span>
-          <div className={styles.timelineCardStats}>
-            <span>
-              <Eye size={11} />
-              {post.views}
-            </span>
-            <span>
-              <Heart size={11} />
-              {post.likes}
-            </span>
-          </div>
-        </div>
-      </div>
-    </>
-  )
+// 先把图片下到浏览器缓存：隧道的渲染要等全部图片就绪，提前加载可以避免长时间黑屏
+function preloadImage(item) {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = () => resolve(true)
+    img.onerror = () => resolve(false)
+    img.src = item.src
+  })
 }
 
-const SAKURA_COLORS = ['#ffb7c5', '#ffc4d6', '#ffd0dc', '#ffcbd8', '#ffd9e3']
+// ===== 验证码风格密码门 =====
+function PasscodeGate({ onPass }) {
+  const [code, setCode] = useState(Array(LEN).fill(''))
+  const [error, setError] = useState(false)
+  const [shake, setShake] = useState(false)
+  const inputs = useRef([])
 
-function Sakura() {
-  const petals = useMemo(() => {
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
-    const count = isMobile ? 12 : 20
-    return Array.from({ length: count }, (_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      delay: -Math.random() * 20,
-      duration: 15 + Math.random() * 12,
-      size: 8 + Math.random() * 10,
-      color: SAKURA_COLORS[Math.floor(Math.random() * SAKURA_COLORS.length)],
-    }))
-  }, [])
-
-  return (
-    <div className={styles.sakuraContainer} aria-hidden="true">
-      {petals.map((p) => (
-        <span
-          key={p.id}
-          className={styles.sakuraPetal}
-          style={{
-            left: `${p.left}%`,
-            width: `${p.size}px`,
-            height: `${p.size}px`,
-            background: p.color,
-            animationDelay: `${p.delay}s`,
-            animationDuration: `${p.duration}s`,
-          }}
-        />
-      ))}
-    </div>
-  )
-}
-
-function Us() {
-  const [session, setSession] = useState(null)
-  const [authLoading, setAuthLoading] = useState(true)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [showWall, setShowWall] = useState(true)
-
-  const [wallItems, setWallItems] = useState([])
-  const [wallLoading, setWallLoading] = useState(true)
-  const [lightbox, setLightbox] = useState(null)
-  const hasSupabase = Boolean(import.meta.env.VITE_SUPABASE_URL)
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setAuthLoading(false)
-    })
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-    return () => subscription.unsubscribe()
-  }, [])
-
-  const fetchWallPhotos = useCallback(async () => {
-    if (!hasSupabase) {
-      setWallItems([])
-      setWallLoading(false)
+  const verify = async (arr) => {
+    const input = arr.join('')
+    setError(false)
+    const { data, error } = await supabase.rpc('verify_us_password', { input })
+    if (error) {
+      setError(true)
+      setShake(true)
+      setTimeout(() => {
+        setShake(false)
+        setCode(Array(LEN).fill(''))
+        setError(false)
+        inputs.current[0]?.focus()
+      }, 600)
       return
     }
-    try {
-      const { data, error } = await supabase.storage
-        .from('uswall')
-        .list('', { sortBy: { column: 'created_at', order: 'desc' } })
-
-      if (error) throw error
-
-      const files = (data || []).filter(
-        (f) => f.name && (f.metadata?.mimetype === 'image/jpeg' || f.metadata?.mimetype === 'image/png')
-      )
-      const items = files.map((f) => {
-        const { data: urlData } = supabase.storage.from('uswall').getPublicUrl(encodeURIComponent(f.name))
-        return { image: urlData.publicUrl, title: '' }
-      })
-      for (let i = items.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[items[i], items[j]] = [items[j], items[i]]
-      }
-      setWallItems(items)
-    } catch (err) {
-      console.error('加载照片失败:', err)
-      setWallItems([])
-    } finally {
-      setWallLoading(false)
+    if (data) {
+      onPass()
+    } else {
+      setError(true)
+      setShake(true)
+      setTimeout(() => {
+        setShake(false)
+        setCode(Array(LEN).fill(''))
+        setError(false)
+        inputs.current[0]?.focus()
+      }, 600)
     }
-  }, [hasSupabase])
+  }
 
-  useEffect(() => {
-    if (session) fetchWallPhotos()
-  }, [fetchWallPhotos, session])
+  const handleChange = (i, v) => {
+    const char = v.slice(-1)
+    const next = [...code]
+    next[i] = char
+    setCode(next)
+    setError(false)
+    if (char && i < LEN - 1) inputs.current[i + 1]?.focus()
+    if (next.every((c) => c)) verify(next)
+  }
 
-  useEffect(() => {
-    if (!lightbox) return
-    const onKey = (e) => {
-      if (e.key === 'Escape') setLightbox(null)
+  const handleKeyDown = (i, e) => {
+    if (e.key === 'Backspace' && !code[i] && i > 0) {
+      inputs.current[i - 1]?.focus()
     }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [lightbox])
+  }
 
-  const handleLogin = async (e) => {
+  const handlePaste = (e) => {
     e.preventDefault()
-    setError('')
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) setError('邮箱或密码错误')
-  }
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-  }
-
-  if (authLoading) {
-    return (
-      <div className={styles.page}>
-        <NavHeader />
-      </div>
-    )
-  }
-
-  if (!session) {
-    return (
-      <div className={styles.page}>
-        <NavHeader />
-        <Sakura />
-        <div className={styles.loginOverlay}>
-          <form className={styles.loginCard} onSubmit={handleLogin}>
-            <h2 className={styles.loginTitle}>欢迎回来</h2>
-            <p className={styles.loginSubtitle}>输入邮箱密码访问「我们」</p>
-            <input
-              className={styles.loginInput}
-              type="email"
-              placeholder="邮箱"
-              value={email}
-              autoComplete="email"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              className={styles.loginInput}
-              type="password"
-              placeholder="密码"
-              value={password}
-              autoComplete="current-password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            {error && <p className={styles.loginError}>{error}</p>}
-            <button className={styles.loginBtn} type="submit">进入</button>
-          </form>
-        </div>
-      </div>
-    )
+    const text = e.clipboardData.getData('text').slice(0, LEN)
+    const next = Array(LEN).fill('')
+    for (let i = 0; i < text.length; i++) next[i] = text[i]
+    setCode(next)
+    setError(false)
+    if (next.every((c) => c)) verify(next)
+    else inputs.current[Math.min(text.length, LEN - 1)]?.focus()
   }
 
   return (
-    <div className={styles.page}>
-      <NavHeader />
-      <Sakura />
+    <div className={styles.gateWrap}>
+      <div className={`${styles.gate} ${shake ? styles.gateShake : ''}`}>
+        <p className={styles.gateEyebrow}>US · PRIVATE</p>
+        <h2 className={styles.gateTitle}>输入访问密码</h2>
+        <p className={styles.gateSub}>这里是属于我们的回忆，请输入密码</p>
 
-      <button
-        className={styles.logoutBtn}
-        type="button"
-        onClick={handleLogout}
-      >
-        <LogOut size={14} />
-        <span>退出</span>
-      </button>
-
-      <button
-        className={styles.sideSwitch}
-        type="button"
-        aria-label="切换内容"
-        onClick={() => setShowWall(v => !v)}
-      >
-        <span className={styles.sideSwitchTrack}>
-          <span className={`${styles.sideSwitchThumb} ${showWall ? styles.on : styles.off}`} />
-        </span>
-      </button>
-
-      {showWall ? (
-        <div className={styles.wallWrap}>
-          {wallLoading ? (
-            <div className={styles.wallEmpty}>加载中...</div>
-          ) : wallItems.length === 0 ? (
-            <div className={styles.wallEmpty}>暂无照片</div>
-          ) : (
-            <DriftWall
-              items={wallItems}
-              columns={7}
-              speed={38}
-              direction="up"
-              dim={0.45}
-              fade={0.55}
-              overlayColor="#1a1a2e"
-              onItemClick={(item) => setLightbox(item.image)}
+        <div className={styles.cells}>
+          {code.map((c, i) => (
+            <input
+              key={i}
+              ref={(el) => { inputs.current[i] = el }}
+              type="password"
+              inputMode="numeric"
+              maxLength={1}
+              value={c}
+              onChange={(e) => handleChange(i, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(i, e)}
+              onPaste={handlePaste}
+              className={`${styles.cell} ${error ? styles.cellError : ''}`}
+              autoFocus={i === 0}
+              autoComplete="off"
             />
-          )}
+          ))}
         </div>
-      ) : (
-        <TimelineRiver />
-      )}
 
-      {lightbox && (
-        <div
-          className={styles.lightboxOverlay}
-          onClick={() => setLightbox(null)}
-        >
-          <div
-            className={styles.lightboxContent}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <img
-              className={styles.lightboxImg}
-              src={lightbox}
-              alt=""
-            />
-            <button
-              className={styles.lightboxClose}
-              type="button"
-              onClick={() => setLightbox(null)}
-              aria-label="关闭"
-            >
-              ×
-            </button>
+        {error && <p className={styles.gateError}>密码错误，请重试</p>}
+
+        <p className={styles.gateHint}>提示：密码是 4 位数字</p>
+      </div>
+    </div>
+  )
+}
+
+// ===== 验证通过后才渲染的内容（照片在这里才加载） =====
+function UsContent() {
+  const [photos, setPhotos] = useState([])
+  const [status, setStatus] = useState('loading')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [progress, setProgress] = useState({ done: 0, total: 0 })
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function loadPhotos() {
+      const { data, error } = await supabase.storage.from(BUCKET).list('', {
+        limit: 1000,
+        sortBy: { column: 'name', order: 'asc' },
+      })
+      if (cancelled) return
+
+      if (error) {
+        setStatus('error')
+        setErrorMessage(error.message)
+        return
+      }
+
+      const items = (data || []).filter(isImageFile).map((file) => ({
+        src: supabase.storage.from(BUCKET).getPublicUrl(file.name).data.publicUrl,
+        alt: file.name,
+      }))
+
+      if (!items.length) {
+        setStatus('empty')
+        return
+      }
+
+      let done = 0
+      setProgress({ done: 0, total: items.length })
+
+      const results = await Promise.all(
+        items.map(async (item) => {
+          const ok = await preloadImage(item)
+          done += 1
+          if (!cancelled) setProgress({ done, total: items.length })
+          return ok ? item : null
+        })
+      )
+      if (cancelled) return
+
+      const ready = results.filter(Boolean)
+      if (!ready.length) {
+        setStatus('error')
+        setErrorMessage('图片全部加载失败，请检查网络')
+        return
+      }
+
+      setPhotos(ready)
+      setStatus('ready')
+    }
+
+    loadPhotos()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const tunnelOptions = useMemo(
+    () => ({ images: photos, theme: 'dark', height: 640, autoTravel: true }),
+    [photos]
+  )
+
+  const loadingText = progress.total
+    ? `正在冲洗照片 ${progress.done} / ${progress.total}`
+    : '正在从相册里取回照片…'
+
+  return (
+    <main className={styles.page}>
+      <header className={styles.head}>
+        <p className={styles.eyebrow}>US · ALBUM TUNNEL</p>
+        <h1 className={styles.title}>我们</h1>
+        <p className={styles.subtitle}>把一起走过的日子，收进一条没有尽头的隧道。</p>
+      </header>
+
+      <section className={styles.stage}>
+        {status === 'ready' && (
+          <AlbumCoverTunnel className={styles.tunnel} options={tunnelOptions} />
+        )}
+        {status === 'loading' && (
+          <div className={styles.notice}>
+            <span className={styles.spinner} aria-hidden="true" />
+            <p>{loadingText}</p>
+            {progress.total > 0 && (
+              <div className={styles.progressTrack} aria-hidden="true">
+                <div
+                  className={styles.progressBar}
+                  style={{ width: `${(progress.done / progress.total) * 100}%` }}
+                />
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        )}
+        {status === 'empty' && <p className={styles.noticeText}>相册里还没有照片。</p>}
+        {status === 'error' && (
+          <p className={styles.noticeText}>照片加载失败：{errorMessage || '请稍后再试'}</p>
+        )}
+      </section>
+
+      <p className={styles.tips}>
+        滚轮 / 上下拖动穿行 · 悬停吸起 · 点击飞入中央 · 方向键切换 · 空格暂停
+      </p>
+    </main>
+  )
+}
+
+// 「我们」页面：先验证密码，通过后显示照片隧道
+function Us() {
+  const [passed, setPassed] = useState(
+    () => sessionStorage.getItem('us_passed') === '1'
+  )
+
+  const handlePass = () => {
+    sessionStorage.setItem('us_passed', '1')
+    setPassed(true)
+  }
+
+  return (
+    <div className={styles.wrapper}>
+      <NavHeader />
+      {passed ? <UsContent /> : <PasscodeGate onPass={handlePass} />}
     </div>
   )
 }

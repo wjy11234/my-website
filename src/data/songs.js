@@ -1,4 +1,4 @@
-import { lyrics, lyricsBeggingYou } from './lyrics'
+import { lyrics, lyricsBeggingYou, lyricsJingyinLianren } from './lyrics'
 
 // 歌曲列表
 export const songs = [
@@ -15,5 +15,12 @@ export const songs = [
     src: '/2Lson - Begging You (Guide Ver.) (Bonus Track).mp3',
     lyrics: lyricsBeggingYou,
     lyricsIndex: 1,
+  },
+  {
+    title: '静音恋人',
+    artist: '礼越',
+    src: '/liyue-jingyin-lianren.mp3',
+    lyrics: lyricsJingyinLianren,
+    lyricsIndex: 2,
   },
 ]
